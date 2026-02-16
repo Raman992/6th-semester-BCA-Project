@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Client, Account, Databases, Query } from 'appwrite';
+import "./admin.css";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -92,7 +93,7 @@ const UserList = () => {
           placeholder="Search users..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+          className="table-search"  
         />
       </div>
 
@@ -101,8 +102,8 @@ const UserList = () => {
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-500 border-t-transparent"></div>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <div className="table-container">
+          <table className="admin-table">
             <thead>
               <tr className="border-b border-gray-700">
                 <th className="text-left py-3 px-4 text-gray-400">User</th>
@@ -123,7 +124,7 @@ const UserList = () => {
                         alt={user.name}
                         className="w-8 h-8 rounded-full mr-3"
                       />
-                      <span className="text-white">{user.name || 'N/A'}</span>
+                      <span className="badge badge-yellow">{user.name || 'N/A'}</span>
                     </div>
                   </td>
                   <td className="py-3 px-4 text-gray-300">{user.email || 'N/A'}</td>
@@ -131,7 +132,7 @@ const UserList = () => {
                     {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                   </td>
                   <td className="py-3 px-4">
-                    <span className="px-2 py-1 bg-purple-600/20 text-purple-500 rounded text-sm">
+                    <span className="badge badge-yellow">
                       {user.genres?.length || 0} selected
                     </span>
                   </td>
@@ -150,7 +151,7 @@ const UserList = () => {
                   <td className="py-3 px-4">
                     <button
                       onClick={() => deleteUser(user.userId)}
-                      className="text-red-400 hover:text-red-300"
+                      className="icon-btn delete"
                     >
                       <i className="fa-solid fa-trash"></i>
                     </button>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Databases, Query } from 'appwrite';
+import { Query } from 'appwrite';
+import { database } from '../../Appwrite';
 
 const TrendingSearches = () => {
   const [searches, setSearches] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const database = new Databases(client);
+  
   const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
   const SEARCH_COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
 
@@ -68,19 +68,18 @@ const TrendingSearches = () => {
       <div className="flex justify-end mb-4">
         <button
           onClick={handleResetAll}
-          className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
+          className="btn-warning px-4 py-2"
         >
           Reset All Counts
         </button>
       </div>
 
       {loading ? (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-500 border-t-transparent"></div>
-        </div>
+<div className="loader-ring"></div>
+
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
+       <div className="table-card overflow-x-auto">
+          <table className="table">
             <thead>
               <tr className="border-b border-gray-700">
                 <th className="text-left py-3 px-4 text-gray-400">#</th>
@@ -98,7 +97,7 @@ const TrendingSearches = () => {
                     <span className="text-white font-medium">{search.searchTerm}</span>
                   </td>
                   <td className="py-3 px-4">
-                    <span className="px-2 py-1 bg-purple-600/20 text-purple-500 rounded">
+                    <span className="count-badge">
                       {search.count} searches
                     </span>
                   </td>
@@ -114,7 +113,7 @@ const TrendingSearches = () => {
                   <td className="py-3 px-4">
                     <button
                       onClick={() => handleDelete(search.$id)}
-                      className="text-red-400 hover:text-red-300"
+                      className="icon-danger"
                     >
                       <i className="fa-solid fa-trash"></i>
                     </button>

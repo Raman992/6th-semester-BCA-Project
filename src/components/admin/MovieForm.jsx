@@ -124,217 +124,227 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
   };
 
   return (
-    <dialog id="movieForm" className="bg-gray-800 rounded-lg p-0 w-full max-w-4xl">
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">
-            {movie ? 'Edit Movie' : 'Add New Movie'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white"
-          >
-            <i className="fa-solid fa-times text-xl"></i>
-          </button>
-        </div>
+  <dialog
+    id="movieForm"
+    className="w-full max-w-3xl rounded-2xl bg-gray-900 text-gray-100 shadow-2xl backdrop:bg-black/60"
+    style={{ color: 'white' }}
+  >
+    <div className="modal-card p-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {movie ? "Edit Movie" : "Add New Movie"}
+        </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="p-3 bg-red-900/50 border border-red-700 rounded-lg">
-              <p className="text-red-400 text-sm">{error}</p>
-            </div>
-          )}
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-white transition"
+        >
+          <i className="fa-solid fa-times text-lg"></i>
+        </button>
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Title *
-              </label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="rounded-lg border border-red-700/50 bg-red-900/30 p-3">
+            <p className="text-sm text-red-400">{error}</p>
+          </div>
+        )}
 
-            <div>
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Original Language
-              </label>
-              <input
-                type="text"
-                name="original_language"
-                value={formData.original_language}
-                onChange={handleChange}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
+        {/* Inputs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Title */}
+          <div>
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Title *</label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="input"
+            />
+          </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Overview
-              </label>
-              <textarea
-                name="overview"
-                value={formData.overview}
-                onChange={handleChange}
-                rows="4"
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
+          {/* Language */}
+          <div>
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Original Language</label>
+            <input
+              type="text"
+              name="original_language"
+              value={formData.original_language}
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
 
-            <div>
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Poster Path
-              </label>
-              <input
-                type="text"
-                name="poster_path"
-                value={formData.poster_path}
-                onChange={handleChange}
-                placeholder="/path/to/poster.jpg"
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
+          {/* Overview */}
+          <div className="md:col-span-2">
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Overview</label>
+            <textarea
+              name="overview"
+              value={formData.overview}
+              onChange={handleChange}
+              rows="4"
+              className="input resize-none"
+            />
+          </div>
 
-            <div>
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Backdrop Path
-              </label>
-              <input
-                type="text"
-                name="backdrop_path"
-                value={formData.backdrop_path}
-                onChange={handleChange}
-                placeholder="/path/to/backdrop.jpg"
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
+          {/* Poster */}
+          <div>
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Poster Path</label>
+            <input
+              type="text"
+              name="poster_path"
+              value={formData.poster_path}
+              onChange={handleChange}
+              placeholder="/poster.jpg"
+              className="input"
+            />
+          </div>
 
-            <div>
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Release Date
-              </label>
-              <input
-                type="date"
-                name="release_date"
-                value={formData.release_date}
-                onChange={handleChange}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
+          {/* Backdrop */}
+          <div>
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Backdrop Path</label>
+            <input
+              type="text"
+              name="backdrop_path"
+              value={formData.backdrop_path}
+              onChange={handleChange}
+              placeholder="/backdrop.jpg"
+              className="input"
+            />
+          </div>
 
-            <div>
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Vote Average
-              </label>
-              <input
-                type="number"
-                name="vote_average"
-                value={formData.vote_average}
-                onChange={handleChange}
-                step="0.1"
-                min="0"
-                max="10"
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
+          {/* Release */}
+          <div>
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Release Date</label>
+            <input
+              type="date"
+              name="release_date"
+              value={formData.release_date}
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
 
-            <div>
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Vote Count
-              </label>
-              <input
-                type="number"
-                name="vote_count"
-                value={formData.vote_count}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-300 text-sm font-bold mb-2">
-                Popularity
-              </label>
-              <input
-                type="number"
-                name="popularity"
-                value={formData.popularity}
-                onChange={handleChange}
-                step="0.1"
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
-              />
-            </div>
+          {/* Rating */}
+          <div>
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Vote Average</label>
+            <input
+              type="number"
+              name="vote_average"
+              value={formData.vote_average}
+              onChange={handleChange}
+              step="0.1"
+              min="0"
+              max="10"
+              className="input"
+            />
           </div>
 
           <div>
-            <label className="block text-gray-300 text-sm font-bold mb-2">
-              Genres
-            </label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {genreOptions.map(genre => (
-                <label key={genre.id} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.genre_ids.includes(genre.id)}
-                    onChange={() => handleGenreToggle(genre.id)}
-                    className="rounded bg-gray-700 border-gray-600"
-                  />
-                  <span className="text-gray-300 text-sm">{genre.name}</span>
-                </label>
-              ))}
-            </div>
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Vote Count</label>
+            <input
+              type="number"
+              name="vote_count"
+              value={formData.vote_count}
+              onChange={handleChange}
+              className="input"
+            />
           </div>
 
-          <div className="flex space-x-4">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                name="adult"
-                checked={formData.adult}
-                onChange={handleChange}
-                className="rounded bg-gray-700 border-gray-600"
-              />
-              <span className="text-gray-300">Adult Content</span>
-            </label>
-
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                name="video"
-                checked={formData.video}
-                onChange={handleChange}
-                className="rounded bg-gray-700 border-gray-600"
-              />
-              <span className="text-gray-300">Has Video</span>
-            </label>
+          <div>
+            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
+Popularity</label>
+            <input
+              type="number"
+              name="popularity"
+              value={formData.popularity}
+              onChange={handleChange}
+              step="0.1"
+              className="input"
+            />
           </div>
+        </div>
 
-          <div className="flex justify-end space-x-4 pt-4 border-t border-gray-700">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
-            >
-              {loading ? 'Saving...' : movie ? 'Update Movie' : 'Add Movie'}
-            </button>
+        {/* Genres */}
+        <div>
+          <label className="label mb-3 block">Genres</label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {genreOptions.map((genre) => (
+              <label
+                key={genre.id}
+                className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition"
+              >
+                <input
+                  type="checkbox"
+                  checked={formData.genre_ids.includes(genre.id)}
+                  onChange={() => handleGenreToggle(genre.id)}
+                  className="accent-purple-600"
+                />
+                {genre.name}
+              </label>
+            ))}
           </div>
-        </form>
-      </div>
-    </dialog>
-  );
+        </div>
+
+        {/* Flags */}
+        <div className="flex gap-6 text-sm">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="adult"
+              checked={formData.adult}
+              onChange={handleChange}
+              className="accent-purple-600"
+            />
+            Adult Content
+          </label>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="video"
+              checked={formData.video}
+              onChange={handleChange}
+              className="accent-purple-600"
+            />
+            Has Video
+          </label>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end gap-3 pt-6 border-t border-gray-800">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 transition disabled:opacity-50"
+          >
+            {loading ? "Saving..." : movie ? "Update Movie" : "Add Movie"}
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+);
+
 };
 
 export default MovieForm;
