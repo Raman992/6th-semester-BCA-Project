@@ -4,6 +4,7 @@ const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID;
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
 const USER_PREFS_COLLECTION_ID = import.meta.env.VITE_APPWRITE_USER_PREFS_COLLECTION_ID;
+const USER_INTERACTIONS_COLLECTION_ID = import.meta.env.VITE_APPWRITE_USER_INTERACTIONS_COLLECTION_ID;
 
 export const client = new Client()
   .setEndpoint('https://fra.cloud.appwrite.io/v1')
@@ -236,3 +237,262 @@ export const getTrendingMovies = async () => {
     console.error(error);
   }
 }
+
+// Track user clicks on movies
+export const trackMovieClick = async (userId, movie) => {
+  try {
+    // Check if user already has an interaction with this movie
+    const existing = await database.listDocuments(
+      DATABASE_ID, 
+      USER_INTERACTIONS_COLLECTION_ID,
+      [
+        Query.equal('userId', [userId]),
+        Query.equal('movieId', [movie.$id])
+      ]
+    );
+
+    if (existing.documents.length > 0) {
+      // Update existing interaction
+      const interaction = existing.documents[0];
+      await database.updateDocument(
+        DATABASE_ID,
+        USER_INTERACTIONS_COLLECTION_ID,
+        interaction.$id,
+        {
+          clickCount: (interaction.clickCount || 0) + 1,
+          lastClickedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      );
+    } else {
+      // Create new interaction
+      await database.createDocument(
+        DATABASE_ID,
+        USER_INTERACTIONS_COLLECTION_ID,
+        ID.unique(),
+        {
+          userId,
+          movieId: movie.$id,
+          movieTitle: movie.title,
+          genres: movie.genre_ids || [],
+          clickCount: 1,
+          firstClickedAt: new Date().toISOString(),
+          lastClickedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      );
+    }
+  } catch (error) {
+    console.error('Error tracking movie click:', error);
+  }
+};
+
+// Get user's clicked movies history
+export const getUserClickHistory = async (userId, limit = 20) => {
+  try {
+    const result = await database.listDocuments(
+      DATABASE_ID,
+      USER_INTERACTIONS_COLLECTION_ID,
+      [
+        Query.equal('userId', [userId]),
+        Query.orderDesc('clickCount'),
+        Query.orderDesc('lastClickedAt'),
+        Query.limit(limit)
+      ]
+    );
+    return result.documents;
+  } catch (error) {
+    console.error('Error fetching user click history:', error);
+    return [];
+  }
+};
+
+// Get personalized recommendations based on user clicks
+export const getPersonalizedRecommendations = async (userId, limit = 10) => {
+  try {
+    // Get user's click history
+    const clickHistory = await getUserClickHistory(userId, 15);
+    
+    if (clickHistory.length === 0) {
+      return []; // No clicks yet
+    }
+
+    // Analyze genre preferences from clicks
+    const genreScores = {};
+    const weightedMovies = [];
+
+    clickHistory.forEach(interaction => {
+      const weight = Math.min(interaction.clickCount, 5); // Cap weight at 5
+      
+      // Score genres
+      if (interaction.genres && Array.isArray(interaction.genres)) {
+        interaction.genres.forEach(genreId => {
+          genreScores[genreId] = (genreScores[genreId] || 0) + weight;
+        });
+      }
+      
+      weightedMovies.push({
+        movieId: interaction.movieId,
+        weight: weight
+      });
+    });
+
+    // Get movies similar to clicked ones
+    const similarMovies = [];
+    
+    // Get movies that share genres with user's preferences
+    const topGenres = Object.entries(genreScores)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([genreId]) => parseInt(genreId));
+
+    // Filter out movies the user has already clicked
+    const clickedMovieIds = new Set(clickHistory.map(h => h.movieId));
+
+    if (topGenres.length > 0) {
+      
+      // Get movies by top genres
+        const genreMovies = await getMoviesByGenreFromDatabase(topGenres);
+        
+        const filteredMovies = genreMovies.filter(movie => !clickedMovieIds.has(movie.$id));
+      
+      // Score movies based on genre match
+      const scoredMovies = filteredMovies.map(movie => {
+        let score = 0;
+        const movieGenres = movie.genre_ids || [];
+        
+        movieGenres.forEach(genreId => {
+          score += genreScores[genreId] || 0;
+        });
+        
+        // Boost score for higher rated movies
+        score += (movie.vote_average || 0) / 2;
+        
+        // Boost for recent/popular movies
+        if (movie.release_date) {
+          const year = parseInt(movie.release_date.split('-')[0]);
+          const currentYear = new Date().getFullYear();
+          const recencyBonus = Math.max(0, (year - currentYear + 5)) / 2;
+          score += recencyBonus;
+        }
+        
+        return { movie, score };
+      });
+      
+      scoredMovies.sort((a, b) => b.score - a.score);
+      similarMovies.push(...scoredMovies.slice(0, limit).map(s => s.movie));
+    }
+    
+    // If not enough recommendations, add trending movies
+    if (similarMovies.length < limit) {
+      const trending = await getTrendingMovies();
+      const trendingMovies_data = trending.filter(m => 
+        !clickedMovieIds.has(m.$id) && 
+        !similarMovies.some(sm => sm.$id === m.$id)
+      );
+      similarMovies.push(...trendingMovies_data.slice(0, limit - similarMovies.length));
+    }
+    
+    return similarMovies.slice(0, limit);
+    
+  } catch (error) {
+    console.error('Error getting personalized recommendations:', error);
+    return [];
+  }
+};
+
+// Get collaborative recommendations (users who liked similar movies)
+export const getCollaborativeRecommendations = async (userId, limit = 10) => {
+  try {
+    // Get user's clicked movies
+    const userClicks = await getUserClickHistory(userId, 10);
+    if (userClicks.length === 0) return [];
+    
+    const userMovieIds = userClicks.map(c => c.movieId);
+    
+    // Find other users who clicked similar movies
+    const otherUsersInteractions = await database.listDocuments(
+      DATABASE_ID,
+      USER_INTERACTIONS_COLLECTION_ID,
+      [
+        Query.notEqual('userId', userId),
+        Query.limit(100)
+      ]
+    );
+    
+    // Calculate user similarity
+    const userSimilarity = {};
+    otherUsersInteractions.documents.forEach(interaction => {
+      if (userMovieIds.includes(interaction.movieId)) {
+        if (!userSimilarity[interaction.userId]) {
+          userSimilarity[interaction.userId] = {
+            commonMovies: 0,
+            movies: []
+          };
+        }
+        userSimilarity[interaction.userId].commonMovies++;
+        userSimilarity[interaction.userId].movies.push(interaction.movieId);
+      }
+    });
+    
+    // Get movies from similar users that user hasn't clicked
+    const recommendedMovies = [];
+    const clickedSet = new Set(userMovieIds);
+    
+    Object.entries(userSimilarity)
+      .sort((a, b) => b[1].commonMovies - a[1].commonMovies)
+      .slice(0, 5)
+      .forEach(([similarUserId, data]) => {
+        // Get this user's other clicked movies
+        const similarUserMovies = otherUsersInteractions.documents
+          .filter(i => i.userId === similarUserId)
+          .map(i => i.movieId);
+        
+        similarUserMovies.forEach(movieId => {
+          if (!clickedSet.has(movieId) && !recommendedMovies.includes(movieId)) {
+            recommendedMovies.push(movieId);
+          }
+        });
+      });
+    
+    // Fetch movie details
+    if (recommendedMovies.length > 0) {
+      const movies = await getAllMoviesFromDatabase(50, 0);
+      const collaborativeMovies = movies.filter(m => 
+        recommendedMovies.includes(m.$id)
+      );
+      return collaborativeMovies.slice(0, limit);
+    }
+    
+    return [];
+    
+  } catch (error) {
+    console.error('Error getting collaborative recommendations:', error);
+    return [];
+  }
+};
+
+// Hybrid recommendation combining content-based and collaborative filtering
+export const getHybridRecommendations = async (userId, limit = 10) => {
+  try {
+    const [contentBased, collaborative] = await Promise.all([
+      getPersonalizedRecommendations(userId, limit),
+      getCollaborativeRecommendations(userId, limit)
+    ]);
+    
+    // Combine and deduplicate
+    const hybrid = [...contentBased];
+    collaborative.forEach(movie => {
+      if (!hybrid.some(m => m.$id === movie.$id)) {
+        hybrid.push(movie);
+      }
+    });
+    
+    return hybrid.slice(0, limit);
+    
+  } catch (error) {
+    console.error('Error getting hybrid recommendations:', error);
+    return [];
+  }
+};

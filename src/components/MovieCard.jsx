@@ -1,14 +1,21 @@
-import React from 'react'
-import nomovieposter from "/noMoviePoster.jpg"
+import React from 'react';
+import noMoviePoster from "/noMoviePoster.jpg";
 
-const MovieCard = ({ movie:
-  { title, vote_average, poster_path, release_date, original_language }
-}) => {
+const MovieCard = ({ movie, onClick }) => {
+  const { title, vote_average, poster_path, release_date, original_language } = movie;
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick(movie);
+    }
+  };
+
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={handleClick}>
       <img
-        src={poster_path ?
-          `https://image.tmdb.org/t/p/w500/${poster_path}` : nomovieposter}
+        src={poster_path
+          ? `https://image.tmdb.org/t/p/w500/${poster_path}`
+          : noMoviePoster}
         alt={title}
       />
 
@@ -22,7 +29,7 @@ const MovieCard = ({ movie:
           </div>
 
           <span>•</span>
-          <p className="lang">{original_language}</p>
+          <p className="lang">{original_language || 'N/A'}</p>
 
           <span>•</span>
           <p className="year">
@@ -31,6 +38,7 @@ const MovieCard = ({ movie:
         </div>
       </div>
     </div>
-  )
-}
-export default MovieCard
+  );
+};
+
+export default MovieCard;
