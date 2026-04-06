@@ -31,7 +31,7 @@ export const AdminProvider = ({ children }) => {
         setAdminUser(user);
       }
     } catch (error) {
-      console.log('No user logged in');
+      console.log('No user logged in', error);
     } finally {
       setLoading(false);
     }

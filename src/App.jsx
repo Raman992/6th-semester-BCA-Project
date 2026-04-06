@@ -338,6 +338,22 @@ const MainApp = ({
           />
         )}
 
+        {recommendedMovies.length > 0 && !searchTerm && (
+          <section className="recommended">
+            <h2>Recommended For You</h2>
+            <p className="section-subtitle">Based on your preferences</p>
+            <ul>
+              {recommendedMovies.slice(0, 10).map((movie) => (
+                <MovieCard
+                  key={movie.$id}
+                  movie={movie}
+                  onClick={handleMovieClick}
+                />
+              ))}
+            </ul>
+          </section>
+        )}
+
         {/* Click-Based Recommendations Section */}
         {showClickRecommendations &&
           clickBasedRecommendations.length > 0 &&
@@ -375,22 +391,6 @@ const MainApp = ({
               </ul>
             </section>
           )}
-
-        {recommendedMovies.length > 0 && !searchTerm && (
-          <section className="recommended">
-            <h2>Recommended For You</h2>
-            <p className="section-subtitle">Based on your preferences</p>
-            <ul>
-              {recommendedMovies.slice(0, 10).map((movie) => (
-                <MovieCard
-                  key={movie.$id}
-                  movie={movie}
-                  onClick={handleMovieClick}
-                />
-              ))}
-            </ul>
-          </section>
-        )}
 
         {trendingMovies.length > 0 && !searchTerm && (
           <section className="trending">

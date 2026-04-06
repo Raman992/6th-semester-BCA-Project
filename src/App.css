@@ -320,9 +320,14 @@
 
 /* Click-Based Recommendations Section */
 .click-recommendations {
-  margin: 40px 0;
-  padding: 20px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(139, 92, 246, 0.1) 100%);
+  max-width: 1400px;
+  margin: 0 auto 5rem;
+  padding: 1rem 1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.05) 0%,
+    rgba(139, 92, 246, 0.1) 100%
+  );
   border-radius: 20px;
   border: 1px solid rgba(168, 85, 247, 0.2);
 }
@@ -377,7 +382,7 @@
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
   }
-  
+
   .click-recommendations .section-header {
     flex-direction: column;
     align-items: flex-start;
