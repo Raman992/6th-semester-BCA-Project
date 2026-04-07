@@ -90,13 +90,13 @@ const AdminDashboard = () => {
           </button>
           <button
             onClick={() => setActiveTab("users")}
-            className={`admin-tab ${activeTab === "movies" ? "active" : ""}`}
+            className={`admin-tab ${activeTab === "users" ? "active" : ""}`}
           >
             Users
           </button>
           <button
             onClick={() => setActiveTab("trending")}
-            className={`admin-tab ${activeTab === "movies" ? "active" : ""}`}
+            className={`admin-tab ${activeTab === "trending" ? "active" : ""}`}
           >
             Trending Searches
           </button>

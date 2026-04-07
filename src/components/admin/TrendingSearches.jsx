@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Query } from 'appwrite';
 import { database } from '../../Appwrite';
+import "./admin.css";
 
 const TrendingSearches = () => {
   const [searches, setSearches] = useState([]);
@@ -65,57 +66,85 @@ const TrendingSearches = () => {
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
+      <div className="section-header">
+        <div className="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+            <path d="M3 3v3h3"/>
+            <path d="M3 17v3h3"/>
+            <path d="M21 17v3h-3"/>
+            <path d="M21 19c1.66 0 3-1.34 3-3s-1.34-3-3-3"/>
+          </svg>
+          Trending Searches
+          <span className="user-count">{searches.length}</span>
+        </div>
         <button
           onClick={handleResetAll}
-          className="btn-warning px-4 py-2"
+          className="reset-btn"
         >
-          Reset All Counts
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+            <path d="M21 3v5h-5"/>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+            <path d="M8 16H3v5"/>
+          </svg>
+          Reset All
         </button>
       </div>
 
       {loading ? (
-<div className="loader-ring"></div>
-
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Loading searches...</p>
+        </div>
       ) : (
-       <div className="table-card overflow-x-auto">
-          <table className="table">
+        <div className="table-container">
+          <table className="admin-table">
             <thead>
-              <tr className="border-b border-gray-700">
-                <th className="text-left py-3 px-4 text-gray-400">#</th>
-                <th className="text-left py-3 px-4 text-gray-400">Search Term</th>
-                <th className="text-left py-3 px-4 text-gray-400">Count</th>
-                <th className="text-left py-3 px-4 text-gray-400">Movie</th>
-                <th className="text-left py-3 px-4 text-gray-400">Actions</th>
+              <tr>
+                <th>#</th>
+                <th>Search Term</th>
+                <th>Count</th>
+                <th>Movie</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {searches.map((search, index) => (
-                <tr key={search.$id} className="border-b border-gray-700 hover:bg-gray-700/50">
-                  <td className="py-3 px-4 text-gray-400">{index + 1}</td>
-                  <td className="py-3 px-4">
-                    <span className="text-white font-medium">{search.searchTerm}</span>
+                <tr key={search.$id}>
+                  <td>
+                    <span className="rank-number">{index + 1}</span>
                   </td>
-                  <td className="py-3 px-4">
-                    <span className="count-badge">
+                  <td>
+                    <span className="search-term">{search.searchTerm}</span>
+                  </td>
+                  <td>
+                    <span className="badge badge-green">
                       {search.count} searches
                     </span>
                   </td>
-                  <td className="py-3 px-4">
+                  <td>
                     {search.poster_url && (
                       <img
                         src={search.poster_url}
                         alt={search.searchTerm}
-                        className="w-12 h-16 object-cover rounded"
+                        className="movie-poster"
                       />
                     )}
                   </td>
-                  <td className="py-3 px-4">
+                  <td>
                     <button
                       onClick={() => handleDelete(search.$id)}
-                      className="icon-danger"
+                      className="icon-btn delete"
+                      title="Delete search"
                     >
-                      <i className="fa-solid fa-trash"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 6h18"/>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        <line x1="10" x2="10" y1="11" y2="17"/>
+                        <line x1="14" x2="14" y1="11" y2="17"/>
+                      </svg>
                     </button>
                   </td>
                 </tr>
@@ -124,8 +153,15 @@ const TrendingSearches = () => {
           </table>
 
           {searches.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
-              No trending searches found
+            <div className="empty-state">
+              <svg className="empty-state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 15s1.5-2 4-2 4 2 4 2"/>
+                <line x1="9" x2="9.01" y1="9" y2="9"/>
+                <line x1="15" x2="15.01" y1="9" y2="9"/>
+              </svg>
+              <h3 className="empty-state-title">No trending searches</h3>
+              <p className="empty-state-text">Search activity will appear here</p>
             </div>
           )}
         </div>

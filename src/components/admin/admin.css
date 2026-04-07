@@ -1,152 +1,456 @@
-/* Container */
-.table-container {
-  overflow-x: auto;
-  border-radius: 12px;
-  background: #111827;
+/* ============================================
+   ADMIN DASHBOARD - ENHANCED STYLES
+   ============================================ */
+
+/* Main container with proper spacing */
+.admin-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-/* Table */
-.admin-table {
+/* Glass panel for content */
+.admin-panel {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+/* ============================================
+   SECTION HEADER
+   ============================================ */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-title svg {
+  width: 28px;
+  height: 28px;
+  color: #a855f7;
+}
+
+.user-count {
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.375rem 1rem;
+  border-radius: 20px;
+}
+
+/* ============================================
+   SEARCH INPUT
+   ============================================ */
+.search-wrapper {
+  position: relative;
+  max-width: 380px;
   width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
 }
 
-/* Header */
-.admin-table thead tr {
-  border-bottom: 1px solid #374151;
+.search-wrapper svg {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  color: #64748b;
+  pointer-events: none;
 }
 
-.admin-table th {
-  text-align: left;
-  padding: 12px 16px;
-  color: #9ca3af;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-}
-
-/* Rows */
-.admin-table tbody tr {
-  border-bottom: 1px solid #374151;
-  transition: background 0.2s ease;
-}
-
-.admin-table tbody tr:hover {
-  background: rgba(55, 65, 81, 0.4);
-}
-
-/* Cells */
-.admin-table td {
-  padding: 12px 16px;
-  color: #e5e7eb;
-}
-
-/* Search Input */
 .table-search {
   width: 100%;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #374151;
-  background: #1f2933;
+  padding: 16px 18px 16px 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.8);
   color: white;
+  font-size: 1rem;
   outline: none;
-  transition: border 0.2s, box-shadow 0.2s;
+  transition: all 0.25s ease;
+}
+
+.table-search::placeholder {
+  color: #64748b;
 }
 
 .table-search:focus {
   border-color: #a855f7;
-  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.35);
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15), 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* Avatar */
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  margin-right: 10px;
+/* ============================================
+   TABLE CONTAINER
+   ============================================ */
+.table-container {
+  overflow-x: auto;
+  border-radius: 16px;
+  background: rgba(17, 24, 39, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Badge */
+/* ============================================
+   TABLE STYLES
+   ============================================ */
+.admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 16px;
+  min-width: 600px;
+}
+
+/* Header */
+.admin-table thead tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 18px 24px;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+/* First header rounded */
+.admin-table thead tr:first-child th:first-child {
+  border-radius: 16px 0 0 0;
+}
+
+.admin-table thead tr:first-child th:last-child {
+  border-radius: 0 16px 0 0;
+}
+
+/* Rows */
+.admin-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.2s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(168, 85, 247, 0.1);
+}
+
+.admin-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Last row rounded */
+.admin-table tbody tr:last-child td:first-child {
+  border-radius: 0 0 0 16px;
+}
+
+.admin-table tbody tr:last-child td:last-child {
+  border-radius: 0 0 16px 0;
+}
+
+/* Cells */
+.admin-table td {
+  padding: 20px 24px;
+  color: #e2e8f0;
+  vertical-align: middle;
+}
+
+/* ============================================
+   USER AVATAR & INFO
+   ============================================ */
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  margin-right: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+  border-color: #a855f7;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+}
+
+.user-name {
+  font-weight: 600;
+  color: #f8fafc;
+  font-size: 1.1rem;
+}
+
+.user-email {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin-top: 2px;
+}
+
+/* ============================================
+   BADGES
+   ============================================ */
 .badge {
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-block;
 }
 
 .badge-yellow {
-  background: rgba(234, 179, 8, 0.15);
-  color: #eab308;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(234, 179, 8, 0.12));
+  color: #fbbf24;
+  border: 1px solid rgba(234, 179, 8, 0.4);
 }
 
 .badge-purple {
-  background: rgba(168, 85, 247, 0.15);
-  color: #a855f7;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(168, 85, 247, 0.12));
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
 }
 
-/* Admin button */
-.admin-btn {
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  transition: 0.2s;
+.badge-green {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(34, 197, 94, 0.12));
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.4);
 }
 
-.admin-true {
-  background: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
+.badge-red {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(239, 68, 68, 0.12));
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
-.admin-true:hover {
-  background: rgba(34, 197, 94, 0.25);
+/* ============================================
+   ACTION BUTTONS
+   ============================================ */
+.action-buttons {
+  display: flex;
+  gap: 12px;
 }
 
-.admin-false {
-  background: rgba(107, 114, 128, 0.15);
-  color: #9ca3af;
-}
-
-.admin-false:hover {
-  background: rgba(107, 114, 128, 0.25);
-}
-
-/* Icon buttons */
 .icon-btn {
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.25s ease;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid transparent;
 }
 
 .icon-btn.edit {
   color: #60a5fa;
+  background: rgba(96, 165, 250, 0.12);
 }
 
 .icon-btn.edit:hover {
-  color: #93c5fd;
+  color: #bfdbfe;
+  background: rgba(96, 165, 250, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(96, 165, 250, 0.35);
 }
 
 .icon-btn.delete {
   color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
 }
 
 .icon-btn.delete:hover {
-  color: #fca5a5;
+  color: #fecaca;
+  background: rgba(248, 113, 113, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(248, 113, 113, 0.35);
 }
 
-/* Empty state */
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================
+   MOVIE POSTER
+   ============================================ */
+.movie-poster {
+  width: 56px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s ease;
+}
+
+.movie-poster:hover {
+  transform: scale(1.1);
+  border-color: #a855f7;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+}
+
+.movie-poster-placeholder {
+  width: 56px;
+  height: 84px;
+  background: rgba(55, 65, 81, 0.6);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.movie-poster-placeholder svg {
+  width: 24px;
+  height: 24px;
+}
+
+.movie-title {
+  font-weight: 600;
+  color: #f8fafc;
+  font-size: 1.1rem;
+}
+
+.movie-year {
+  color: #94a3b8;
+  font-size: 1rem;
+  margin-top: 2px;
+}
+
+/* ============================================
+   SEARCH TERM & RANK
+   ============================================ */
+.search-term {
+  font-weight: 600;
+  color: #f8fafc;
+  font-size: 1.1rem;
+}
+
+.rank-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* ============================================
+   RESET BUTTON
+   ============================================ */
+.reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: 12px;
+  color: #fbbf24;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.reset-btn:hover {
+  background: rgba(251, 191, 36, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.35);
+}
+
+.reset-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
 .empty-state {
   text-align: center;
-  padding: 40px 0;
-  color: #9ca3af;
-  opacity: 0.85;
+  padding: 80px 30px;
+  color: #94a3b8;
 }
 
-/* Spinner */
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  color: #475569;
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  margin-bottom: 10px;
+}
+
+.empty-state-text {
+  font-size: 1rem;
+  color: #64748b;
+}
+
+/* ============================================
+   LOADING STATE
+   ============================================ */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 30px;
+  gap: 24px;
+}
+
+.loading-spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 4px solid rgba(168, 85, 247, 0.2);
+  border-top: 4px solid #a855f7;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  color: #94a3b8;
+  font-size: 1.1rem;
+}
+
 .spinner {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  border: 4px solid #a855f7;
-  border-top: 4px solid transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid rgba(168, 85, 247, 0.2);
+  border-top: 4px solid #a855f7;
   animation: spin 0.8s linear infinite;
   margin: auto;
 }
@@ -154,5 +458,59 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .admin-content {
+    padding: 1rem;
+  }
+
+  .admin-panel {
+    padding: 1.5rem;
+    border-radius: 18px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-wrapper {
+    max-width: 100%;
+  }
+
+  .admin-table {
+    font-size: 14px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 14px 16px;
+  }
+
+  .user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .user-name,
+  .movie-title,
+  .search-term {
+    font-size: 1rem;
+  }
+
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .movie-poster {
+    width: 44px;
+    height: 66px;
   }
 }

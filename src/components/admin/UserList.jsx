@@ -1,41 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { Client, Account, Databases, Query } from 'appwrite';
+import { Functions } from "appwrite";
+import React, { useState, useEffect } from "react";
+import { Client, Account, Databases, Query } from "appwrite";
 import "./admin.css";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const client = new Client()
-    .setEndpoint('https://fra.cloud.appwrite.io/v1')
+    .setEndpoint("https://fra.cloud.appwrite.io/v1")
     .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
 
   const account = new Account(client);
   const databases = new Databases(client);
   const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
-  const USER_PREFS_COLLECTION_ID = import.meta.env.VITE_APPWRITE_USER_PREFS_COLLECTION_ID;
+  const USER_PREFS_COLLECTION_ID = import.meta.env
+    .VITE_APPWRITE_USER_PREFS_COLLECTION_ID;
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  const functions = new Functions(client);
+
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Note: Appwrite doesn't allow listing all users directly from client-side
-      // You'll need to create a serverless function or use the Appwrite server SDK
-      // For now, we'll fetch users from preferences collection
-      const prefs = await databases.listDocuments(
-        DATABASE_ID,
-        USER_PREFS_COLLECTION_ID,
-        [Query.limit(100)]
+      const execution = await functions.createExecution(
+        import.meta.env.VITE_APPWRITE_GET_USERS_FUNCTION_ID,
       );
-      
-      console.log('Fetched users:', prefs.documents);
-      setUsers(prefs.documents);
+
+      const result = JSON.parse(execution.responseBody);
+
+      console.log("Users from function:", result.users);
+
+      setUsers(result.users);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error("Error fetching users:", error);
     } finally {
       setLoading(false);
     }
@@ -43,119 +45,147 @@ const UserList = () => {
 
   const toggleAdminStatus = async (userId, currentStatus) => {
     try {
-      // Update user preferences to toggle admin status
-      const userPrefs = users.find(u => u.userId === userId);
+      const userPrefs = users.find((u) => u.userId === userId);
       if (userPrefs) {
         await databases.updateDocument(
           DATABASE_ID,
           USER_PREFS_COLLECTION_ID,
           userPrefs.$id,
           {
-            isAdmin: !currentStatus
-          }
+            isAdmin: !currentStatus,
+          },
         );
         fetchUsers();
       }
     } catch (error) {
-      console.error('Error updating admin status:', error);
-      alert('Error updating admin status');
+      console.error("Error updating admin status:", error);
+      alert("Error updating admin status");
     }
   };
 
-  const deleteUser = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+  const deleteUser = async (user) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        // Find and delete user preferences
-        const userPrefs = users.find(u => u.userId === userId);
-        if (userPrefs) {
-          await databases.deleteDocument(
-            DATABASE_ID,
-            USER_PREFS_COLLECTION_ID,
-            userPrefs.$id
-          );
-        }
+        await functions.createExecution(
+          import.meta.env.VITE_APPWRITE_DELETE_USER_FUNCTION_ID,
+          JSON.stringify({
+            userId: user.$id,
+            prefsId: user.prefsId,
+          }),
+        );
+
         fetchUsers();
       } catch (error) {
-        console.error('Error deleting user:', error);
-        alert('Error deleting user');
+        console.error("Error deleting user:", error);
+        alert("Error deleting user");
       }
     }
   };
 
-  const filteredUsers = users.filter(user =>
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
     <div>
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search users..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="table-search"  
-        />
+      <div className="section-header">
+        <div className="section-title">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Manage Users
+          <span className="user-count">{filteredUsers.length}</span>
+        </div>
+        <div className="search-wrapper">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="table-search"
+          />
+        </div>
       </div>
 
       {loading ? (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-500 border-t-transparent"></div>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Loading users...</p>
         </div>
       ) : (
         <div className="table-container">
           <table className="admin-table">
             <thead>
-              <tr className="border-b border-gray-700">
-                <th className="text-left py-3 px-4 text-gray-400">User</th>
-                <th className="text-left py-3 px-4 text-gray-400">Email</th>
-                <th className="text-left py-3 px-4 text-gray-400">Joined</th>
-                <th className="text-left py-3 px-4 text-gray-400">Genres</th>
-                <th className="text-left py-3 px-4 text-gray-400">Admin</th>
-                <th className="text-left py-3 px-4 text-gray-400">Actions</th>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map(user => (
-                <tr key={user.$id} className="border-b border-gray-700 hover:bg-gray-700/50">
-                  <td className="py-3 px-4">
-                    <div className="flex items-center">
+              {filteredUsers.map((user) => (
+                <tr key={user.$id}>
+                  <td>
+                    <div className="user-info">
                       <img
-                        src={`https://ui-avatars.com/api/?name=${user.name || 'User'}&background=a855f7&color=fff`}
+                        src={`https://ui-avatars.com/api/?name=${user.name || "User"}&background=a855f7&color=fff&bold=true`}
                         alt={user.name}
-                        className="w-8 h-8 rounded-full mr-3"
+                        className="user-avatar"
                       />
-                      <span className="badge badge-yellow">{user.name || 'N/A'}</span>
+                      <span className="user-name">
+                        {user.name || "Unnamed User"}
+                      </span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-gray-300">{user.email || 'N/A'}</td>
-                  <td className="py-3 px-4 text-gray-300">
-                    {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                  <td>
+                    <span className="user-email">{user.email || "N/A"}</span>
                   </td>
-                  <td className="py-3 px-4">
-                    <span className="badge badge-yellow">
-                      {user.genres?.length || 0} selected
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
+                  <td>
                     <button
-                      onClick={() => toggleAdminStatus(user.userId, user.isAdmin)}
-                      className={`px-3 py-1 rounded text-sm ${
-                        user.isAdmin
-                          ? 'bg-green-600/20 text-green-500 hover:bg-green-600/30'
-                          : 'bg-gray-600/20 text-gray-400 hover:bg-gray-600/30'
-                      }`}
-                    >
-                      {user.isAdmin ? 'Admin' : 'User'}
-                    </button>
-                  </td>
-                  <td className="py-3 px-4">
-                    <button
-                      onClick={() => deleteUser(user.userId)}
+                      onClick={() => deleteUser(user)}
                       className="icon-btn delete"
+                      title="Delete user"
                     >
-                      <i className="fa-solid fa-trash"></i>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        <line x1="10" x2="10" y1="11" y2="17" />
+                        <line x1="14" x2="14" y1="11" y2="17" />
+                      </svg>
                     </button>
                   </td>
                 </tr>
@@ -164,8 +194,26 @@ const UserList = () => {
           </table>
 
           {filteredUsers.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
-              No users found
+            <div className="empty-state">
+              <svg
+                className="empty-state-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+                <line x1="9" x2="9.01" y1="9" y2="9" />
+                <line x1="15" x2="15.01" y1="9" y2="9" />
+              </svg>
+              <h3 className="empty-state-title">No users found</h3>
+              <p className="empty-state-text">
+                Try adjusting your search criteria
+              </p>
             </div>
           )}
         </div>

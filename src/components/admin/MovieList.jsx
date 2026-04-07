@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Query } from 'appwrite';
 import { database } from '../../Appwrite.jsx';
 import MovieForm from './MovieForm';
+import "./admin.css";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
@@ -64,70 +65,109 @@ const MovieList = () => {
 
   return (
     <div>
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search movies..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="table-search"
-        />
+      <div className="section-header">
+        <div className="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <path d="M7 3v18"/>
+            <path d="m21 15-3-3-3 3"/>
+            <path d="m21 9-3 3-3-3"/>
+          </svg>
+          All Movies
+          <span className="user-count">{movies.length}</span>
+        </div>
+        <div className="search-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search movies..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="table-search"
+          />
+        </div>
       </div>
 
       {loading ? (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-500 border-t-transparent"></div>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Loading movies...</p>
         </div>
       ) : (
         <div className="table-container">
           <table className="admin-table">
             <thead>
-              <tr className="border-b border-gray-700">
-                <th className="text-left py-3 px-4 text-gray-400">Poster</th>
-                <th className="text-left py-3 px-4 text-gray-400">Title</th>
-                <th className="text-left py-3 px-4 text-gray-400">Release Date</th>
-                <th className="text-left py-3 px-4 text-gray-400">Rating</th>
-                <th className="text-left py-3 px-4 text-gray-400">Actions</th>
+              <tr>
+                <th>Poster</th>
+                <th>Title</th>
+                <th>Release Date</th>
+                <th>Rating</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {movies.map(movie => (
-                <tr key={movie.$id} className="border-b border-gray-700 hover:bg-gray-700/50">
-                  <td className="py-3 px-4">
+                <tr key={movie.$id}>
+                  <td>
                     {movie.poster_path ? (
                       <img
                         src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
                         alt={movie.title}
-                        className="w-12 h-16 object-cover rounded"
+                        className="movie-poster"
                       />
                     ) : (
-                      <div className="w-12 h-16 bg-gray-700 rounded flex items-center justify-center">
-                        <i className="fa-solid fa-film text-gray-500"></i>
+                      <div className="movie-poster-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                          <path d="M7 3v18"/>
+                          <path d="m21 15-3-3-3 3"/>
+                          <path d="m21 9-3 3-3-3"/>
+                        </svg>
                       </div>
                     )}
                   </td>
-                  <td className="py-3 px-4 text-white">{movie.title}</td>
-                  <td className="py-3 px-4 text-gray-300">
-                    {movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}
+                  <td>
+                    <span className="movie-title">{movie.title}</span>
                   </td>
-                  <td className="py-3 px-4">
-                    <span className="badge badge-yellow ">
+                  <td>
+                    <span className="movie-year">
+                      {movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="badge badge-yellow">
                       {movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}
                     </span>
                   </td>
-                  <td className="py-3 px-4">
-                    <button
-                      onClick={() => handleEdit(movie)}
-                      className="icon-btn edit"
-                    >
-                      <i className="fa-solid fa-edit"></i>
-                    </button>
-                    <button
-                      onClick={() => handleDelete(movie.$id)}
-                      className="icon-btn delete"
-                    >
-                      <i className="fa-solid fa-trash"></i>
-                    </button>
+                  <td>
+                    <div className="action-buttons">
+                      <button
+                        onClick={() => handleEdit(movie)}
+                        className="icon-btn edit"
+                        title="Edit movie"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                          <path d="m15 5 4 4"/>
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => handleDelete(movie.$id)}
+                        className="icon-btn delete"
+                        title="Delete movie"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3 6h18"/>
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                          <line x1="10" x2="10" y1="11" y2="17"/>
+                          <line x1="14" x2="14" y1="11" y2="17"/>
+                        </svg>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -135,8 +175,15 @@ const MovieList = () => {
           </table>
 
           {movies.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
-              No movies found
+            <div className="empty-state">
+              <svg className="empty-state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                <path d="M7 3v18"/>
+                <path d="m21 15-3-3-3 3"/>
+                <path d="m21 9-3 3-3-3"/>
+              </svg>
+              <h3 className="empty-state-title">No movies found</h3>
+              <p className="empty-state-text">Add your first movie to get started</p>
             </div>
           )}
         </div>
