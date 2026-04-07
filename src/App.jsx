@@ -7,6 +7,7 @@ import Login from "./components/Login.jsx";
 import Signup from "./components/Signup.jsx";
 import Preferences from "./components/Preferences.jsx";
 import Navbar from "./components/Navbar.jsx";
+import UserDashboard from "./components/UserDashboard.jsx";
 import { useDebounce } from "react-use";
 import noMoviePoster from "/noMoviePoster.jpg";
 import {
@@ -38,6 +39,7 @@ const App = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
   const [userPreferences, setUserPreferences] = useState(null);
 
   // Movie state
@@ -247,9 +249,11 @@ const App = () => {
             element={
               <MainApp
                 user={user}
+                setUser={setUser}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 showPreferences={showPreferences}
+                showDashboard={showDashboard}
                 userPreferences={userPreferences}
                 recommendedMovies={recommendedMovies}
                 trendingMovies={trendingMovies}
@@ -258,6 +262,7 @@ const App = () => {
                 errorMessage={errorMessage}
                 handleLogout={handleLogout}
                 setShowPreferences={setShowPreferences}
+                setShowDashboard={setShowDashboard}
                 handlePreferencesSave={handlePreferencesSave}
               />
             }
@@ -271,9 +276,11 @@ const App = () => {
 // MainApp component receives props
 const MainApp = ({
   user,
+  setUser,
   searchTerm,
   setSearchTerm,
   showPreferences,
+  showDashboard,
   userPreferences,
   recommendedMovies,
   trendingMovies,
@@ -282,6 +289,7 @@ const MainApp = ({
   errorMessage,
   handleLogout,
   setShowPreferences,
+  setShowDashboard,
   handlePreferencesSave,
 }) => {
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -342,7 +350,16 @@ const MainApp = ({
         user={user}
         onLogout={handleLogout}
         onShowPreferences={() => setShowPreferences(true)}
+        onShowDashboard={() => setShowDashboard(true)}
       />
+
+      {showDashboard && (
+        <UserDashboard 
+          user={user}
+          onClose={() => setShowDashboard(false)}
+          onUpdateUser={(updatedUser) => setUser(updatedUser)}
+        />
+      )}
 
       <div className="wrapper">
         <header>

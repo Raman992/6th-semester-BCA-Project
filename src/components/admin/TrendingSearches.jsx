@@ -67,15 +67,8 @@ const TrendingSearches = () => {
   return (
     <div>
       <div className="section-header">
-        <div className="section-title">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-            <path d="M3 3v3h3"/>
-            <path d="M3 17v3h3"/>
-            <path d="M21 17v3h-3"/>
-            <path d="M21 19c1.66 0 3-1.34 3-3s-1.34-3-3-3"/>
-          </svg>
-          Trending Searches
+        <div className="section-title">        
+         Trending Searches 
           <span className="user-count">{searches.length}</span>
         </div>
         <button

@@ -2,7 +2,7 @@ import React from "react";
 import { logout } from "../Appwrite.jsx";
 import { useAdmin } from "../context/AdminContext";
 
-const Navbar = ({ user, onLogout, onShowPreferences }) => {
+const Navbar = ({ user, onLogout, onShowPreferences, onShowDashboard }) => {
   const { isAdmin } = useAdmin();
 
   const handleLogout = async () => {
@@ -21,24 +21,28 @@ const Navbar = ({ user, onLogout, onShowPreferences }) => {
 
         {user && (
           <div className="navbar-user">
-            <div className="user-info">
-              <img
-                src={`https://ui-avatars.com/api/?name=${user.name}&background=a855f7&color=fff`}
-                alt={user.name}
-                className="user-avatar"
-              />
-              <span className="user-name">{user.name}</span>
-            </div>
-
             <div className="navbar-actions">
               {/* Only show admin button if user is admin */}
               {isAdmin && (
-                <a href="/admin/dashboard" className="nav-button admin-button">
+                <a href="/admin/dashboard" className="nav-button preferences-button">
                   <i className="fa-solid fa-shield-haltered"></i>
                   Admin
                 </a>
               )}
 
+              <div className="user-info">
+                <button
+                  onClick={onShowDashboard}
+                  className="nav-button preferences-button"
+                >
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${user.name}&background=a855f7&color=fff`}
+                    alt={user.name}
+                    className="user-avatar"
+                  />
+                  <span className="user-name">{user.name}</span>
+                </button>
+              </div>
               <button
                 onClick={onShowPreferences}
                 className="nav-button preferences-button"

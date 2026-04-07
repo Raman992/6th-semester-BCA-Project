@@ -503,3 +503,31 @@ export const getHybridRecommendations = async (userId, limit = 10) => {
     return [];
   }
 };
+
+// User Account Update Functions
+export const updateUserName = async (name) => {
+  try {
+    return await account.updateName(name);
+  } catch (error) {
+    console.error('Error updating name:', error);
+    throw error;
+  }
+}
+
+export const updateUserEmail = async (email, password) => {
+  try {
+    return await account.updateEmail(email, password);
+  } catch (error) {
+    console.error('Error updating email:', error);
+    throw error;
+  }
+}
+
+export const updateUserPassword = async (newPassword, oldPassword) => {
+  try {
+    return await account.updatePassword(newPassword, oldPassword);
+  } catch (error) {
+    console.error('Error updating password:', error);
+    throw error;
+  }
+}

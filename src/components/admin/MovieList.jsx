@@ -93,12 +93,6 @@ const MovieList = () => {
     <div>
       <div className="section-header">
         <div className="section-title">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-            <path d="M7 3v18"/>
-            <path d="m21 15-3-3-3 3"/>
-            <path d="m21 9-3 3-3-3"/>
-          </svg>
           All Movies
           <span className="user-count">{movies.length}</span>
         </div>

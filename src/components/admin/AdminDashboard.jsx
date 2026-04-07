@@ -134,7 +134,7 @@ const AdminDashboard = () => {
           {activeTab === "trending" && (
             <div>
               <h2 className="text-xl font-bold text-white mb-6">
-                Trending Searches
+                Manage Searches
               </h2>
               <TrendingSearches />
             </div>
