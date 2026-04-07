@@ -119,8 +119,6 @@ const App = () => {
   const loadTrendingMovies = async () => {
     try {
       const movies = await getTrendingMovies();
-      console.log("App.jsx - Loaded trending movies:", movies);
-      console.log("App.jsx - trendingMovies.length:", movies?.length);
       setTrendingMovies(movies);
     } catch (error) {
       console.error(`Error fetching trending movies: ${error}`);

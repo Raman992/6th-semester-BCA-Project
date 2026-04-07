@@ -33,8 +33,6 @@ const UserList = () => {
 
       const result = JSON.parse(execution.responseBody);
 
-      console.log("Users from function:", result.users);
-
       setUsers(result.users);
     } catch (error) {
       console.error("Error fetching users:", error);

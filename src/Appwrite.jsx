@@ -203,10 +203,6 @@ export const getUserPreferences = async (userId) => {
 // Original functions (keep these)
 export const updateSearchCount = async (searchTerm, movie) => {
   try {
-    console.log("updateSearchCount - movie:", movie);
-    console.log("updateSearchCount - movie fields:", Object.keys(movie));
-    console.log("updateSearchCount - movie.id:", movie?.id);
-    console.log("updateSearchCount - movie.movie_id:", movie?.movie_id);
     
     const movieId = movie.movie_id || movie.id || movie.tmdb_id;
     
@@ -220,7 +216,6 @@ export const updateSearchCount = async (searchTerm, movie) => {
         count: doc.count + 1,
       })
     } else {
-      console.log("Creating new trending document with:", { searchTerm, movieId });
       try {
         await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
           searchTerm,
@@ -228,7 +223,6 @@ export const updateSearchCount = async (searchTerm, movie) => {
           movie_id: movieId,
           poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         });
-        console.log("Document created successfully");
       } catch (createError) {
         console.error("Error creating document:", createError);
       }
@@ -244,7 +238,6 @@ export const getTrendingMovies = async () => {
       Query.limit(5),
       Query.orderDesc("count")
     ])
-    console.log("Trending movies:", result.documents);
     return result.documents;
   } catch (error) {
     console.error("Error getting trending movies:", error);

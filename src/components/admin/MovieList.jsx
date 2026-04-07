@@ -7,19 +7,28 @@ import "./admin.css";
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [cursor, setCursor] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
 
   const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
   const MOVIES_COLLECTION_ID = import.meta.env.VITE_APPWRITE_MOVIES_COLLECTION_ID;
 
   useEffect(() => {
+    setCursor(null);
+    setHasMore(false);
     fetchMovies();
   }, [searchTerm]);
 
-  const fetchMovies = async () => {
-    setLoading(true);
+  const fetchMovies = async (loadMore = false) => {
+    if (loadMore) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
     try {
       const queries = [Query.limit(50), Query.orderDesc('createdAt')];
       
@@ -27,17 +36,34 @@ const MovieList = () => {
         queries.push(Query.contains('title', [searchTerm]));
       }
 
+      if (loadMore && cursor) {
+        queries.push(Query.cursorAfter(cursor));
+      }
+
       const response = await database.listDocuments(
         DATABASE_ID,
         MOVIES_COLLECTION_ID,
         queries
       );
-      setMovies(response.documents);
+
+      if (loadMore) {
+        setMovies(prev => [...prev, ...response.documents]);
+      } else {
+        setMovies(response.documents);
+      }
+      
+      setCursor(response.cursor);
+      setHasMore(response.documents.length === 50);
     } catch (error) {
       console.error('Error fetching movies:', error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
+  };
+
+  const handleLoadMore = () => {
+    fetchMovies(true);
   };
 
   const handleDelete = async (movieId) => {
@@ -184,6 +210,18 @@ const MovieList = () => {
               </svg>
               <h3 className="empty-state-title">No movies found</h3>
               <p className="empty-state-text">Add your first movie to get started</p>
+            </div>
+          )}
+
+          {hasMore && (
+            <div className="load-more-container">
+              <button 
+                onClick={handleLoadMore} 
+                className="load-more-btn"
+                disabled={loadingMore}
+              >
+                {loadingMore ? 'Loading...' : 'Load More'}
+              </button>
             </div>
           )}
         </div>

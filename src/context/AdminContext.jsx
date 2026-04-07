@@ -40,7 +40,6 @@ export const AdminProvider = ({ children }) => {
       setAdminUser(user);
       return isUserAdmin;
     } catch (error) {
-      console.log('No user logged in or admin check failed:', error);
       setIsAdmin(false);
       setAdminUser(null);
       return false;
