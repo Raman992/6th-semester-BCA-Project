@@ -1,25 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
+import { useNavigate } from 'react-router-dom';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { loginAsAdmin } = useAdmin();
+  const { loginAsAdmin, isAdmin, loading, checking } = useAdmin();
+  const navigate = useNavigate();
+
+  // Redirect if already logged in as admin
+  useEffect(() => {
+    if (isAdmin) {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [isAdmin, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
     const result = await loginAsAdmin(email, password);
     
     if (!result.success) {
       setError(result.error || 'Invalid admin credentials');
+    } else {
+      navigate('/admin/dashboard', { replace: true });
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -27,7 +34,7 @@ const AdminLogin = () => {
       <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white">Admin Panel</h1>
-          <p className="text-gray-400 mt-2">Sign in to manage your movie database</p>
+          <p className="text-gray-400 mt-2">Admin access only</p>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -65,12 +72,18 @@ const AdminLogin = () => {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={checking}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 disabled:opacity-50"
           >
-            {loading ? 'Signing in...' : 'Sign In as Admin'}
+            {checking ? 'Verifying...' : 'Sign In as Admin'}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <a href="/" className="text-purple-400 hover:text-purple-300 text-sm">
+            ← Back to main site
+          </a>
+        </div>
       </div>
     </div>
   );

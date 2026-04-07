@@ -30,6 +30,7 @@ import {
   getHybridRecommendations,
   getUserClickHistory,
 } from "./Appwrite.jsx";
+import ProtectedRoute from "./components/protectedRoute.jsx";
 
 const App = () => {
   // Authentication state
@@ -217,7 +218,14 @@ const App = () => {
       <AdminProvider>
         <Routes>
           <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/*"
             element={

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Client, Account, Databases, Query } from 'appwrite';
+import { useNavigate } from 'react-router-dom';
 
 const AdminContext = createContext();
 
@@ -16,43 +17,70 @@ export const AdminProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminUser, setAdminUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [checking, setChecking] = useState(false);
 
-  useEffect(() => {
-    checkAdminStatus();
-  }, []);
+  const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
+  const USER_PREFS_COLLECTION_ID = import.meta.env.VITE_APPWRITE_USER_PREFS_COLLECTION_ID;
 
   const checkAdminStatus = async () => {
     try {
       const user = await account.get();
-      // Check if user has admin role (you can store this in preferences or a separate collection)
-      const prefs = await account.getPrefs();
-      if (prefs.isAdmin) {
-        setIsAdmin(true);
-        setAdminUser(user);
-      }
+      
+      // Check admin status from preferences collection
+      const prefsResult = await databases.listDocuments(
+        DATABASE_ID,
+        USER_PREFS_COLLECTION_ID,
+        [Query.equal('userId', user.$id)]
+      );
+      
+      const userPrefs = prefsResult.documents[0];
+      const isUserAdmin = userPrefs?.isAdmin === true;
+      
+      setIsAdmin(isUserAdmin);
+      setAdminUser(user);
+      return isUserAdmin;
     } catch (error) {
-      console.log('No user logged in', error);
+      console.log('No user logged in or admin check failed:', error);
+      setIsAdmin(false);
+      setAdminUser(null);
+      return false;
     } finally {
       setLoading(false);
     }
   };
 
   const loginAsAdmin = async (email, password) => {
+    setChecking(true);
     try {
+      // First, create session
       await account.createEmailPasswordSession(email, password);
       const user = await account.get();
-      const prefs = await account.getPrefs();
       
-      if (prefs.isAdmin) {
+      // Check admin status from preferences
+      const prefsResult = await databases.listDocuments(
+        DATABASE_ID,
+        USER_PREFS_COLLECTION_ID,
+        [Query.equal('userId', user.$id)]
+      );
+      
+      const userPrefs = prefsResult.documents[0];
+      
+      if (userPrefs?.isAdmin === true) {
         setIsAdmin(true);
         setAdminUser(user);
         return { success: true };
       } else {
+        // Not admin - log them out immediately
         await account.deleteSession('current');
-        return { success: false, error: 'Not an admin account' };
+        setIsAdmin(false);
+        setAdminUser(null);
+        return { success: false, error: 'Access denied. Admin privileges required.' };
       }
     } catch (error) {
-      return { success: false, error: error.message };
+      console.error('Admin login error:', error);
+      return { success: false, error: error.message || 'Invalid credentials' };
+    } finally {
+      setChecking(false);
     }
   };
 
@@ -66,13 +94,51 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
+  // Function to set a user as admin (only call this from a secure backend/script)
+  const setUserAsAdmin = async (userId, isAdmin = true) => {
+    try {
+      const prefsResult = await databases.listDocuments(
+        DATABASE_ID,
+        USER_PREFS_COLLECTION_ID,
+        [Query.equal('userId', userId)]
+      );
+      
+      if (prefsResult.documents.length > 0) {
+        await databases.updateDocument(
+          DATABASE_ID,
+          USER_PREFS_COLLECTION_ID,
+          prefsResult.documents[0].$id,
+          { isAdmin }
+        );
+      } else {
+        await databases.createDocument(
+          DATABASE_ID,
+          USER_PREFS_COLLECTION_ID,
+          ID.unique(),
+          { userId, isAdmin }
+        );
+      }
+      return true;
+    } catch (error) {
+      console.error('Error setting admin status:', error);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    checkAdminStatus();
+  }, []);
+
   return (
     <AdminContext.Provider value={{
       isAdmin,
       adminUser,
       loading,
+      checking,
       loginAsAdmin,
-      logoutAdmin
+      logoutAdmin,
+      checkAdminStatus,
+      setUserAsAdmin
     }}>
       {children}
     </AdminContext.Provider>

@@ -1,7 +1,10 @@
 import React from "react";
 import { logout } from "../Appwrite.jsx";
+import { useAdmin } from "../context/AdminContext";
 
 const Navbar = ({ user, onLogout, onShowPreferences }) => {
+  const { isAdmin } = useAdmin();
+
   const handleLogout = async () => {
     await logout();
     onLogout();
@@ -28,10 +31,13 @@ const Navbar = ({ user, onLogout, onShowPreferences }) => {
             </div>
 
             <div className="navbar-actions">
-              <a href="/admin/dashboard" className="nav-button admin-button">
-                <i className="fa-solid fa-shield-haltered"></i>
-                Admin
-              </a>
+              {/* Only show admin button if user is admin */}
+              {isAdmin && (
+                <a href="/admin/dashboard" className="nav-button admin-button">
+                  <i className="fa-solid fa-shield-haltered"></i>
+                  Admin
+                </a>
+              )}
 
               <button
                 onClick={onShowPreferences}
