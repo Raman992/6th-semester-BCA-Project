@@ -8,6 +8,7 @@ import Signup from "./components/Signup.jsx";
 import Preferences from "./components/Preferences.jsx";
 import Navbar from "./components/Navbar.jsx";
 import UserDashboard from "./components/UserDashboard.jsx";
+import BookmarkModal from "./components/BookmarkModal.jsx";
 import { useDebounce } from "react-use";
 import noMoviePoster from "/noMoviePoster.jpg";
 import {
@@ -299,6 +300,7 @@ const MainApp = ({
   const [showClickRecommendations, setShowClickRecommendations] =
     useState(false);
   const [clickHistoryCount, setClickHistoryCount] = useState(0);
+  const [showBookmarks, setShowBookmarks] = useState(false);
 
   // Load click-based recommendations when user interacts
   const loadClickRecommendations = async () => {
@@ -346,12 +348,13 @@ const MainApp = ({
     <main>
       <div className="pattern" />
 
-      <Navbar
-        user={user}
-        onLogout={handleLogout}
-        onShowPreferences={() => setShowPreferences(true)}
-        onShowDashboard={() => setShowDashboard(true)}
-      />
+       <Navbar
+         user={user}
+         onLogout={handleLogout}
+         onShowPreferences={() => setShowPreferences(true)}
+         onShowDashboard={() => setShowDashboard(true)}
+         onShowBookmarks={() => setShowBookmarks(true)}
+       />
 
       {showDashboard && (
         <UserDashboard 
@@ -383,14 +386,15 @@ const MainApp = ({
           <section className="recommended">
             <h2>Recommended For You</h2>
             <p className="section-subtitle">Based on your preferences</p>
-            <ul>
-              {recommendedMovies.slice(0, 10).map((movie) => (
-                <MovieCard
-                  key={movie.$id}
-                  movie={movie}
-                  onClick={handleMovieClick}
-                />
-              ))}
+               <ul>
+                 {clickBasedRecommendations.slice(0, 10).map((movie) => (
+                  <MovieCard
+                    key={movie.$id}
+                    movie={movie}
+                    onClick={handleMovieClick}
+                    user={user}
+                  />
+                 ))}
             </ul>
           </section>
         )}
@@ -423,11 +427,12 @@ const MainApp = ({
               </p>
               <ul>
                 {clickBasedRecommendations.slice(0, 10).map((movie) => (
-                  <MovieCard
-                    key={movie.$id}
-                    movie={movie}
-                    onClick={handleMovieClick}
-                  />
+                 <MovieCard
+                   key={movie.$id}
+                   movie={movie}
+                   onClick={handleMovieClick}
+                   user={user}
+                 />
                 ))}
               </ul>
             </section>
@@ -453,28 +458,34 @@ const MainApp = ({
         <section className="all-movies">
           <h2>{searchTerm ? "Search Results" : "All Movies"}</h2>
 
-          {isLoading ? (
-            <Spinner />
-          ) : errorMessage ? (
-            <p className="text-red-500">{errorMessage}</p>
-          ) : (
-            <ul>
-              {movieList.map((movie) => (
-                <MovieCard
-                  key={movie.$id}
-                  movie={movie}
-                  onClick={handleMovieClick}
-                />
-              ))}
-            </ul>
+           {isLoading ? (
+             <Spinner />
+           ) : errorMessage ? (
+             <p className="text-red-500">{errorMessage}</p>
+           ) : (
+             <ul>
+               {movieList.map((movie) => (
+                 <MovieCard
+                   key={movie.$id}
+                   movie={movie}
+                   onClick={handleMovieClick}
+                   user={user}
+                 />
+               ))}
+             </ul>
           )}
         </section>
       </div>
 
-      {/* Movie Modal */}
-      {selectedMovie && (
-        <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
-      )}
+       {/* Movie Modal */}
+       {selectedMovie && (
+         <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
+       )}
+       
+       {/* Bookmark Modal */}
+       {showBookmarks && (
+         <BookmarkModal user={user} onClose={() => setShowBookmarks(false)} />
+       )}
     </main>
   );
 };

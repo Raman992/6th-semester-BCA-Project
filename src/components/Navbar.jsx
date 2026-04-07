@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { logout } from "../Appwrite.jsx";
 import { useAdmin } from "../context/AdminContext";
 
-const Navbar = ({ user, onLogout, onShowPreferences, onShowDashboard }) => {
+const Navbar = ({ user, onLogout, onShowPreferences, onShowDashboard, onShowBookmarks }) => {
   const { isAdmin } = useAdmin();
+  const [showBookmarks, setShowBookmarks] = useState(false);
 
   const handleLogout = async () => {
     await logout();
     onLogout();
+  };
+
+  const handleShowBookmarks = () => {
+    setShowBookmarks(true);
+    onShowBookmarks();
   };
 
   return (
@@ -49,6 +55,13 @@ const Navbar = ({ user, onLogout, onShowPreferences, onShowDashboard }) => {
               >
                 <i className="fa-solid fa-sliders"></i>
                 Preferences
+              </button>
+              <button
+                onClick={handleShowBookmarks}
+                className="nav-button preferences-button"
+              >
+                <i className="fa-solid fa-bookmark"></i>
+                Bookmarks
               </button>
               <button
                 onClick={handleLogout}

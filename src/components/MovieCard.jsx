@@ -1,12 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import noMoviePoster from "/noMoviePoster.jpg";
+import { isBookmarked, saveBookmark, removeBookmark } from "../Appwrite.jsx";
 
-const MovieCard = ({ movie, onClick }) => {
-  const { title, vote_average, poster_path, release_date, original_language } = movie;
+const MovieCard = ({ movie, onClick, user }) => {
+  const { title, vote_average, poster_path, release_date, original_language, $id: movieId } = movie;
+  const [isBookmarking, setIsBookmarking] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  // Check if movie is bookmarked when component mounts or user changes
+  React.useEffect(() => {
+    if (user && user.$id) {
+      const checkBookmarkStatus = async () => {
+        const bookmarked = await isBookmarked(user.$id, movieId);
+        setIsBookmarked(bookmarked);
+      };
+      checkBookmarkStatus();
+    }
+  }, [user, movieId]);
 
   const handleClick = () => {
     if (onClick) {
       onClick(movie);
+    }
+  };
+
+  const handleBookmarkClick = async (e) => {
+    e.stopPropagation(); // Prevent triggering the movie click
+    if (!user || !user.$id) return;
+
+    setIsBookmarking(true);
+    try {
+      if (isBookmarked) {
+        await removeBookmark(user.$id, movieId);
+        setIsBookmarked(false);
+      } else {
+        await saveBookmark(user.$id, movieId, movie);
+        setIsBookmarked(true);
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    } finally {
+      setIsBookmarking(false);
     }
   };
 
@@ -18,6 +52,15 @@ const MovieCard = ({ movie, onClick }) => {
           : noMoviePoster}
         alt={title}
       />
+
+      {/* Bookmark Button */}
+      <button 
+        onClick={handleBookmarkClick}
+        className={`bookmark-btn ${isBookmarked ? 'bookmarked' : ''} ${isBookmarking ? 'loading' : ''}`}
+        aria-label={isBookmarked ? "Remove from bookmarks" : "Add to bookmarks"}
+      >
+        <i className="fa-solid fa-bookmark"></i>
+      </button>
 
       <div className="mt-4">
         <h3>{title}</h3>
