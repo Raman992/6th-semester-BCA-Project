@@ -28,9 +28,11 @@ const UserList = () => {
       // For now, we'll fetch users from preferences collection
       const prefs = await databases.listDocuments(
         DATABASE_ID,
-        USER_PREFS_COLLECTION_ID
+        USER_PREFS_COLLECTION_ID,
+        [Query.limit(100)]
       );
       
+      console.log('Fetched users:', prefs.documents);
       setUsers(prefs.documents);
     } catch (error) {
       console.error('Error fetching users:', error);

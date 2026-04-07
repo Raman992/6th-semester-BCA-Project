@@ -20,12 +20,12 @@ export const saveMovieToDatabase = async (movie) => {
   try {
     // Check if movie already exists
     const result = await database.listDocuments(DATABASE_ID, MOVIES_COLLECTION_ID, [
-      Query.equal('tmdb_id', movie.id),
+      Query.equal('movie_id', movie.id),
     ]);
 
     if (result.documents.length === 0) {
       await database.createDocument(DATABASE_ID, MOVIES_COLLECTION_ID, ID.unique(), {
-        tmdb_id: movie.id,
+        movie_id: movie.id,
         title: movie.title,
         overview: movie.overview,
         poster_path: movie.poster_path,
@@ -36,7 +36,7 @@ export const saveMovieToDatabase = async (movie) => {
         genre_ids: movie.genre_ids,
         original_language: movie.original_language,
         popularity: movie.popularity,
-        adult: movie.adapter,
+        adult: movie.adult,
         video: movie.video,
         createdAt: new Date().toISOString(),
       });
@@ -66,7 +66,7 @@ export const getAllMoviesFromDatabase = async (limit = 20, offset = 0) => {
 export const searchMoviesInDatabase = async (searchTerm) => {
   try {
     const result = await database.listDocuments(DATABASE_ID, MOVIES_COLLECTION_ID, [
-      Query.search('title', searchTerm),
+      Query.contains('title', [searchTerm]),
       Query.limit(20),
       Query.orderDesc("vote_average"),
     ]);
@@ -203,6 +203,13 @@ export const getUserPreferences = async (userId) => {
 // Original functions (keep these)
 export const updateSearchCount = async (searchTerm, movie) => {
   try {
+    console.log("updateSearchCount - movie:", movie);
+    console.log("updateSearchCount - movie fields:", Object.keys(movie));
+    console.log("updateSearchCount - movie.id:", movie?.id);
+    console.log("updateSearchCount - movie.movie_id:", movie?.movie_id);
+    
+    const movieId = movie.movie_id || movie.id || movie.tmdb_id;
+    
     const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
       Query.equal('searchTerm', searchTerm),
     ])
@@ -213,12 +220,18 @@ export const updateSearchCount = async (searchTerm, movie) => {
         count: doc.count + 1,
       })
     } else {
-      await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
-        searchTerm,
-        count: 1,
-        movie_id: movie.id,
-        poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-      })
+      console.log("Creating new trending document with:", { searchTerm, movieId });
+      try {
+        await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
+          searchTerm,
+          count: 1,
+          movie_id: movieId,
+          poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+        });
+        console.log("Document created successfully");
+      } catch (createError) {
+        console.error("Error creating document:", createError);
+      }
     }
   } catch (error) {
     console.error(error);
@@ -231,10 +244,11 @@ export const getTrendingMovies = async () => {
       Query.limit(5),
       Query.orderDesc("count")
     ])
-
+    console.log("Trending movies:", result.documents);
     return result.documents;
   } catch (error) {
-    console.error(error);
+    console.error("Error getting trending movies:", error);
+    return [];
   }
 }
 

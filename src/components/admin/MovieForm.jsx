@@ -87,7 +87,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
     try {
       const movieData = {
         ...formData,
-        tmdb_id: movie?.tmdb_id || Math.floor(Math.random() * 1000000),
+        movie_id: movie?.movie_id || Math.floor(Math.random() * 1000000),
         vote_average: parseFloat(formData.vote_average),
         vote_count: parseInt(formData.vote_count),
         popularity: parseFloat(formData.popularity)

@@ -168,9 +168,9 @@ const MovieModal = ({ movie, onClose }) => {
 
             {/* Action Buttons */}
             <div className="movie-modal-actions">
-              {movie.tmdb_id && (
+              {movie.movie_id && (
                 <a
-                  href={`https://www.themoviedb.org/movie/${movie.tmdb_id}`}
+                  href={`https://www.themoviedb.org/movie/${movie.movie_id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="modal-btn modal-btn-tmdb"

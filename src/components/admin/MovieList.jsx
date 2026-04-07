@@ -23,7 +23,7 @@ const MovieList = () => {
       const queries = [Query.limit(50), Query.orderDesc('createdAt')];
       
       if (searchTerm) {
-        queries.push(Query.search('title', searchTerm));
+        queries.push(Query.contains('title', [searchTerm]));
       }
 
       const response = await database.listDocuments(
