@@ -387,7 +387,7 @@ const MainApp = ({
             <h2>Recommended For You</h2>
             <p className="section-subtitle">Based on your preferences</p>
                <ul>
-                 {clickBasedRecommendations.slice(0, 10).map((movie) => (
+                 {recommendedMovies.slice(0, 10).map((movie) => (
                   <MovieCard
                     key={movie.$id}
                     movie={movie}
@@ -484,7 +484,11 @@ const MainApp = ({
        
        {/* Bookmark Modal */}
        {showBookmarks && (
-         <BookmarkModal user={user} onClose={() => setShowBookmarks(false)} />
+         <BookmarkModal
+           user={user}
+           onClose={() => setShowBookmarks(false)}
+           onMovieClick={handleMovieClick}
+         />
        )}
     </main>
   );
