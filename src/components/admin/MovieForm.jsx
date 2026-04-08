@@ -44,6 +44,13 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
   ];
 
   useEffect(() => {
+    const dialog = document.getElementById("movieForm");
+    if (dialog) {
+      dialog.showModal();
+    }
+  }, []);
+
+  useEffect(() => {
     if (movie) {
       setFormData({
         title: movie.title || '',
@@ -87,7 +94,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
     try {
       const movieData = {
         ...formData,
-        movie_id: movie?.movie_id || Math.floor(Math.random() * 1000000),
+        tmdb_id: movie?.tmdb_id || movie?.movie_id || Math.floor(Math.random() * 1000000),
         vote_average: parseFloat(formData.vote_average),
         vote_count: parseInt(formData.vote_count),
         popularity: parseFloat(formData.popularity)
