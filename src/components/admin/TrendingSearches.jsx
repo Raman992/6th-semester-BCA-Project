@@ -50,14 +50,16 @@ const TrendingSearches = () => {
   const handleResetAll = async () => {
     if (window.confirm("Are you sure you want to reset all search counts?")) {
       try {
-        for (const search of searches) {
-          await database.updateDocument(
-            DATABASE_ID,
-            SEARCH_COLLECTION_ID,
-            search.$id,
-            { count: 0 },
-          );
-        }
+        await Promise.all(
+          searches.map((search) =>
+            database.updateDocument(
+              DATABASE_ID,
+              SEARCH_COLLECTION_ID,
+              search.$id,
+              { count: 0 },
+            ),
+          ),
+        );
         fetchTrendingSearches();
       } catch (error) {
         console.error("Error resetting searches:", error);
