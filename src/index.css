@@ -292,7 +292,7 @@ header p {
   content: 'TOP';
   position: absolute;
   top: 12px;
-  right: 12px;
+  left: 12px;
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
   color: black;
   font-size: 0.7rem;

@@ -1,7 +1,3 @@
-/* ============================================
-   ADMIN DASHBOARD - ENHANCED STYLES
-   ============================================ */
-
 /* Main container with proper spacing */
 .admin-content {
   max-width: 1400px;
@@ -173,9 +169,6 @@
   vertical-align: middle;
 }
 
-/* ============================================
-   USER AVATAR & INFO
-   ============================================ */
 .user-info {
   display: flex;
   align-items: center;
@@ -208,9 +201,6 @@
   margin-top: 2px;
 }
 
-/* ============================================
-   BADGES
-   ============================================ */
 .badge {
   padding: 8px 16px;
   border-radius: 12px;
@@ -244,9 +234,6 @@
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
-/* ============================================
-   ACTION BUTTONS
-   ============================================ */
 .action-buttons {
   display: flex;
   gap: 12px;
@@ -293,9 +280,6 @@
   height: 20px;
 }
 
-/* ============================================
-   MOVIE POSTER
-   ============================================ */
 .movie-poster {
   width: 56px;
   height: 84px;
@@ -339,9 +323,6 @@
   margin-top: 2px;
 }
 
-/* ============================================
-   SEARCH TERM & RANK
-   ============================================ */
 .search-term {
   font-weight: 600;
   color: #f8fafc;
@@ -361,9 +342,6 @@
   font-weight: 700;
 }
 
-/* ============================================
-   RESET BUTTON
-   ============================================ */
 .reset-btn {
   display: flex;
   align-items: center;
@@ -390,9 +368,6 @@
   height: 20px;
 }
 
-/* ============================================
-   EMPTY STATE
-   ============================================ */
 .empty-state {
   text-align: center;
   padding: 80px 30px;
@@ -418,9 +393,6 @@
   font-size: 0.875rem;
 }
 
-/* ============================================
-   LOAD MORE
-   ============================================ */
 .load-more-container {
   display: flex;
   justify-content: center;
@@ -450,9 +422,6 @@
   transform: none;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
 @media (max-width: 768px) {
   .admin-content {
     padding: 1rem;
@@ -501,5 +470,163 @@
   .movie-poster {
     width: 44px;
     height: 66px;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(2, 6, 23, 0.85); /* Deep dark overlay */
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content.movie-modal {
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  margin-bottom: 0; /* Reset panel margin */
+  display: flex;
+  flex-direction: column;
+  animation: modalFadeUp 0.3s ease-out;
+}
+
+@keyframes modalFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  margin-bottom: 1.5rem;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.form-scroll-viewport {
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 1.5rem;
+}
+
+/* Custom Scrollbar for the form */
+.form-scroll-viewport::-webkit-scrollbar {
+  width: 6px;
+}
+.form-scroll-viewport::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.input-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-input {
+  padding-left: 18px !important; /* Overriding the search icon padding */
+}
+
+.form-row-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Genre Pills */
+.genre-pill-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+
+.genre-pill {
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+
+.genre-pill:hover {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.genre-pill.active {
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+/* Checkbox Row */
+.checkbox-row {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #f8fafc;
+  cursor: pointer;
+}
+
+.toggle-label input[type="checkbox"] {
+  accent-color: #a855f7;
+  width: 18px;
+  height: 18px;
+}
+
+.error-banner {
+  text-align: center;
+  padding: 12px;
+  margin-bottom: 1rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.close-modal-btn {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .form-row-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }

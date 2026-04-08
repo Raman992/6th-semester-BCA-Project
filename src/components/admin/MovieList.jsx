@@ -3,6 +3,7 @@ import { Query } from 'appwrite';
 import { database } from '../../Appwrite.jsx';
 import MovieForm from './MovieForm';
 import "./admin.css";
+import { Search, Edit, Trash2, Image } from "lucide-react";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
@@ -97,10 +98,7 @@ const MovieList = () => {
           <span className="user-count">{movies.length}</span>
         </div>
         <div className="search-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.3-4.3"/>
-          </svg>
+          <Search size={18} />
           <input
             type="text"
             placeholder="Search movies..."
@@ -140,12 +138,7 @@ const MovieList = () => {
                       />
                     ) : (
                       <div className="movie-poster-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                          <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-                          <path d="M7 3v18"/>
-                          <path d="m21 15-3-3-3 3"/>
-                          <path d="m21 9-3 3-3-3"/>
-                        </svg>
+                        <Image size={32} />
                       </div>
                     )}
                   </td>
@@ -169,23 +162,14 @@ const MovieList = () => {
                         className="icon-btn edit"
                         title="Edit movie"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                          <path d="m15 5 4 4"/>
-                        </svg>
+                       <Edit size={18} />
                       </button>
                       <button
                         onClick={() => handleDelete(movie.$id)}
                         className="icon-btn delete"
                         title="Delete movie"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M3 6h18"/>
-                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                          <line x1="10" x2="10" y1="11" y2="17"/>
-                          <line x1="14" x2="14" y1="11" y2="17"/>
-                        </svg>
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   </td>
@@ -196,12 +180,7 @@ const MovieList = () => {
 
           {movies.length === 0 && (
             <div className="empty-state">
-              <svg className="empty-state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-                <path d="M7 3v18"/>
-                <path d="m21 15-3-3-3 3"/>
-                <path d="m21 9-3 3-3-3"/>
-              </svg>
+                <Image size={48} className="empty-state-icon" />
               <h3 className="empty-state-title">No movies found</h3>
               <p className="empty-state-text">Add your first movie to get started</p>
             </div>
