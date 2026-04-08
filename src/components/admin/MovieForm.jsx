@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ID } from 'appwrite';
 import { database } from '../../Appwrite.jsx';
+
 const MovieForm = ({ movie, onSuccess, onClose }) => {
   const [formData, setFormData] = useState({
     title: '',
@@ -14,7 +15,8 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
     original_language: '',
     popularity: 0,
     adult: false,
-    video: false
+    video: false,
+    TrailerId: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -64,7 +66,8 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
         original_language: movie.original_language || '',
         popularity: movie.popularity || 0,
         adult: movie.adult || false,
-        video: movie.video || false
+        video: movie.video || false,
+        TrailerId: movie.TrailerId || ''
       });
     }
   }, [movie]);
@@ -131,227 +134,206 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
   };
 
   return (
-  <dialog
-    id="movieForm"
-    className="w-full max-w-3xl rounded-2xl bg-gray-900 text-gray-100 shadow-2xl backdrop:bg-black/60"
-    style={{ color: 'white' }}
-  >
-    <div className="modal-card p-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          {movie ? "Edit Movie" : "Add New Movie"}
-        </h2>
+    <div className="modal-overlay">
+      <div className="admin-panel modal-content movie-modal">
+        {/* Header */}
+        <div className="modal-header section-header">
+          <h2 className="section-title">
+            {movie ? "Edit Movie" : "Add New Movie"}
+          </h2>
 
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-white transition"
-        >
-          <i className="fa-solid fa-times text-lg"></i>
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="rounded-lg border border-red-700/50 bg-red-900/30 p-3">
-            <p className="text-sm text-red-400">{error}</p>
-          </div>
-        )}
-
-        {/* Inputs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Title */}
-          <div>
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Title *</label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className="input"
-            />
-          </div>
-
-          {/* Language */}
-          <div>
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Original Language</label>
-            <input
-              type="text"
-              name="original_language"
-              value={formData.original_language}
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
-
-          {/* Overview */}
-          <div className="md:col-span-2">
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Overview</label>
-            <textarea
-              name="overview"
-              value={formData.overview}
-              onChange={handleChange}
-              rows="4"
-              className="input resize-none"
-            />
-          </div>
-
-          {/* Poster */}
-          <div>
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Poster Path</label>
-            <input
-              type="text"
-              name="poster_path"
-              value={formData.poster_path}
-              onChange={handleChange}
-              placeholder="/poster.jpg"
-              className="input"
-            />
-          </div>
-
-          {/* Backdrop */}
-          <div>
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Backdrop Path</label>
-            <input
-              type="text"
-              name="backdrop_path"
-              value={formData.backdrop_path}
-              onChange={handleChange}
-              placeholder="/backdrop.jpg"
-              className="input"
-            />
-          </div>
-
-          {/* Release */}
-          <div>
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Release Date</label>
-            <input
-              type="date"
-              name="release_date"
-              value={formData.release_date}
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
-
-          {/* Rating */}
-          <div>
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Vote Average</label>
-            <input
-              type="number"
-              name="vote_average"
-              value={formData.vote_average}
-              onChange={handleChange}
-              step="0.1"
-              min="0"
-              max="10"
-              className="input"
-            />
-          </div>
-
-          <div>
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Vote Count</label>
-            <input
-              type="number"
-              name="vote_count"
-              value={formData.vote_count}
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
-
-          <div>
-            <label className="genre-option flex items-center gap-2 text-sm text-gray-300">
-Popularity</label>
-            <input
-              type="number"
-              name="popularity"
-              value={formData.popularity}
-              onChange={handleChange}
-              step="0.1"
-              className="input"
-            />
-          </div>
+          <button className="icon-btn delete" onClick={onClose}>
+            <i className="fa-solid fa-times"></i>
+          </button>
         </div>
 
-        {/* Genres */}
-        <div>
-          <label className="label mb-3 block">Genres</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {genreOptions.map((genre) => (
-              <label
-                key={genre.id}
-                className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition"
-              >
+        <form onSubmit={handleSubmit} className="modal-form">
+          {error && (
+            <div className="badge badge-red error-banner">
+              <p>{error}</p>
+            </div>
+          )}
+
+          <div className="form-scroll-viewport">
+            <div className="form-group">
+              <label className="input-label">Title *</label>
+              <input
+                className="table-search modal-input"
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-row-grid">
+              <div className="form-group">
+                <label className="input-label">Original Language</label>
+                <input
+                  className="table-search modal-input"
+                  type="text"
+                  name="original_language"
+                  value={formData.original_language}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="input-label">Release Date</label>
+                <input
+                  className="table-search modal-input"
+                  type="date"
+                  name="release_date"
+                  value={formData.release_date}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="input-label">Overview</label>
+              <textarea
+                className="table-search modal-input"
+                name="overview"
+                value={formData.overview}
+                onChange={handleChange}
+                rows="4"
+              />
+            </div>
+
+            <div className="form-row-grid">
+              <div className="form-group">
+                <label className="input-label">Poster Path</label>
+                <input
+                  className="table-search modal-input"
+                  type="text"
+                  name="poster_path"
+                  value={formData.poster_path}
+                  onChange={handleChange}
+                  placeholder="/poster.jpg"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="input-label">Backdrop Path</label>
+                <input
+                  className="table-search modal-input"
+                  type="text"
+                  name="backdrop_path"
+                  value={formData.backdrop_path}
+                  onChange={handleChange}
+                  placeholder="/backdrop.jpg"
+                />
+              </div>
+            </div>
+
+            <div className="form-row-grid">
+              <div className="form-group">
+                <label className="input-label">Vote Average</label>
+                <input
+                  className="table-search modal-input"
+                  type="number"
+                  name="vote_average"
+                  value={formData.vote_average}
+                  onChange={handleChange}
+                  step="0.1"
+                  min="0"
+                  max="10"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="input-label">Vote Count</label>
+                <input
+                  className="table-search modal-input"
+                  type="number"
+                  name="vote_count"
+                  value={formData.vote_count}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="input-label">Popularity</label>
+                <input
+                  className="table-search modal-input"
+                  type="number"
+                  name="popularity"
+                  value={formData.popularity}
+                  onChange={handleChange}
+                  step="0.1"
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="input-label">Genres</label>
+              <div className="genre-pill-container">
+                {genreOptions.map((genre) => (
+                  <div
+                    key={genre.id}
+                    className={`genre-pill ${formData.genre_ids.includes(genre.id) ? 'active' : ''}`}
+                    onClick={() => handleGenreToggle(genre.id)}
+                  >
+                    {genre.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="checkbox-row">
+              <label className="toggle-label">
                 <input
                   type="checkbox"
-                  checked={formData.genre_ids.includes(genre.id)}
-                  onChange={() => handleGenreToggle(genre.id)}
-                  className="accent-purple-600"
+                  name="adult"
+                  checked={formData.adult}
+                  onChange={handleChange}
                 />
-                {genre.name}
+                Adult Content
               </label>
-            ))}
+
+              <label className="toggle-label">
+                <input
+                  type="checkbox"
+                  name="video"
+                  checked={formData.video}
+                  onChange={handleChange}
+                />
+                Has Video
+              </label>
+              {formData.video &&(<input
+                className="table-search modal-input"
+                type="text"
+                name="TrailerId"
+                value={formData.TrailerId}
+                onChange={handleChange}
+                placeholder="Trailer ID"
+              />)}
+            </div>
           </div>
-        </div>
 
-        {/* Flags */}
-        <div className="flex gap-6 text-sm">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="adult"
-              checked={formData.adult}
-              onChange={handleChange}
-              className="accent-purple-600"
-            />
-            Adult Content
-          </label>
+          <div className="modal-footer">
+            <button
+              className="reset-btn"
+              type="button"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
 
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="video"
-              checked={formData.video}
-              onChange={handleChange}
-              className="accent-purple-600"
-            />
-            Has Video
-          </label>
-        </div>
-
-        {/* Footer */}
-        <div className="flex justify-end gap-3 pt-6 border-t border-gray-800">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-5 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition"
-          >
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 transition disabled:opacity-50"
-          >
-            {loading ? "Saving..." : movie ? "Update Movie" : "Add Movie"}
-          </button>
-        </div>
-      </form>
+            <button
+              className="load-more-btn"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : movie ? "Update Movie" : "Add Movie"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  </dialog>
-);
-
+  );
 };
 
 export default MovieForm;

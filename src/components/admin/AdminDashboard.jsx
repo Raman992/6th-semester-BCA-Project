@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { database } from "../../Appwrite.jsx";
 import MovieForm from "./MovieForm";
 import MovieList from "./MovieList";
@@ -7,6 +7,8 @@ import TrendingSearches from "./TrendingSearches";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("movies");
+  const [showMovieForm, setShowMovieForm] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
   const [stats, setStats] = useState({
     totalMovies: 0,
     totalUsers: 0,
@@ -33,17 +35,34 @@ const AdminDashboard = () => {
         SEARCH_COLLECTION_ID,
       );
 
-      // Get total users (you'll need to set up a users collection or use Appwrite users API)
-      // This is a placeholder - you might need to create a users collection separately
-
       setStats({
         totalMovies: movies.total,
-        totalUsers: 0, // Update this with actual user count
+        totalUsers: 0,
         totalSearches: searches.total,
       });
     } catch (error) {
       console.error("Error fetching stats:", error);
     }
+  };
+
+  const handleAddMovie = () => {
+    setSelectedMovie(null);
+    setShowMovieForm(true);
+  };
+
+  const handleEditMovie = (movie) => {
+    setSelectedMovie(movie);
+    setShowMovieForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowMovieForm(false);
+    setSelectedMovie(null);
+  };
+
+  const handleSuccess = () => {
+    fetchStats();
+    handleCloseForm();
   };
 
   return (
@@ -109,16 +128,13 @@ const AdminDashboard = () => {
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-white">Manage Movies</h2>
                 <button
-                  onClick={() =>
-                    document.getElementById("movieForm").showModal()
-                  }
+                  onClick={handleAddMovie}
                   className="btn-primary px-4 py-2 text-white"
                 >
                   Add New Movie
                 </button>
               </div>
-              <MovieList />
-              <MovieForm onSuccess={fetchStats} />
+              <MovieList onEditMovie={handleEditMovie} />
             </div>
           )}
 
@@ -141,6 +157,13 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
+      {showMovieForm && (
+        <MovieForm
+          movie={selectedMovie}
+          onSuccess={handleSuccess}
+          onClose={handleCloseForm}
+        />
+      )}
     </div>
   );
 };
