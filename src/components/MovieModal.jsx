@@ -155,18 +155,6 @@ const MovieModal = ({ movie, onClose }) => {
               </div>
             )}
 
-            {movie.TrailerId && (
-              <iframe
-                width="100%"
-                height="315"
-                src={`https://www.youtube.com/embed/${movie.TrailerId}`}
-                title="YouTube video player"
-                frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className=""
-            ></iframe>)}
-
             {/* Additional Info */}
             <div className="movie-modal-info-grid">
               {movie.vote_count > 0 && (
@@ -194,6 +182,18 @@ const MovieModal = ({ movie, onClose }) => {
                 </div>
               )}
             </div>
+
+            {movie.TrailerId && (
+              <iframe
+                width="90%"
+                height="315"
+                src={`https://www.youtube.com/embed/${movie.TrailerId}`}
+                title="YouTube video player"
+                frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className=""
+            ></iframe>)}
 
             {/* Action Buttons */}
             <div className="movie-modal-actions">

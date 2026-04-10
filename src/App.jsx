@@ -215,15 +215,21 @@ const App = () => {
           <section className="trending">
             <h2>Trending Movies</h2>
             <ul>
-              {trendingMovies.map((movie, index) => (
-                <li key={movie.$id} >
-                  <p>{index + 1}</p>
-                  <img
-                    src={movie.poster_url ? movie.poster_url : noMoviePoster}
-                    alt={movie.title}
-                  />
-                </li>
-              ))}
+              {trendingMovies.map(
+                (movie, index) =>
+                  movie.title &&
+                  movie.poster_url && (
+                    <li key={movie.$id}>
+                      <p>{index + 1}</p>
+                      <img
+                        src={
+                          movie.poster_url ? movie.poster_url : noMoviePoster
+                        }
+                        alt={movie.title}
+                      />
+                    </li>
+                  ),
+              )}
             </ul>
           </section>
         )}
@@ -348,16 +354,16 @@ const MainApp = ({
     <main>
       <div className="pattern" />
 
-       <Navbar
-         user={user}
-         onLogout={handleLogout}
-         onShowPreferences={() => setShowPreferences(true)}
-         onShowDashboard={() => setShowDashboard(true)}
-         onShowBookmarks={() => setShowBookmarks(true)}
-       />
+      <Navbar
+        user={user}
+        onLogout={handleLogout}
+        onShowPreferences={() => setShowPreferences(true)}
+        onShowDashboard={() => setShowDashboard(true)}
+        onShowBookmarks={() => setShowBookmarks(true)}
+      />
 
       {showDashboard && (
-        <UserDashboard 
+        <UserDashboard
           user={user}
           onClose={() => setShowDashboard(false)}
           onUpdateUser={(updatedUser) => setUser(updatedUser)}
@@ -386,15 +392,20 @@ const MainApp = ({
           <section className="recommended">
             <h2>Recommended For You</h2>
             <p className="section-subtitle">Based on your preferences</p>
-               <ul>
-                 {recommendedMovies.slice(0, 10).map((movie) => (
-                  <MovieCard
-                    key={movie.$id}
-                    movie={movie}
-                    onClick={handleMovieClick}
-                    user={user}
-                  />
-                 ))}
+            <ul>
+              {recommendedMovies
+                .slice(0, 20)
+                .map(
+                  (movie) =>
+                    movie.title && (
+                      <MovieCard
+                        key={movie.$id}
+                        movie={movie}
+                        onClick={handleMovieClick}
+                        user={user}
+                      />
+                    ),
+                )}
             </ul>
           </section>
         )}
@@ -426,14 +437,19 @@ const MainApp = ({
                 Personalized recommendations based on your viewing behavior
               </p>
               <ul>
-                {clickBasedRecommendations.slice(0, 10).map((movie) => (
-                 <MovieCard
-                   key={movie.$id}
-                   movie={movie}
-                   onClick={handleMovieClick}
-                   user={user}
-                 />
-                ))}
+                {clickBasedRecommendations
+                  .slice(0, 15)
+                  .map(
+                    (movie) =>
+                      movie.title && (
+                        <MovieCard
+                          key={movie.$id}
+                          movie={movie}
+                          onClick={handleMovieClick}
+                          user={user}
+                        />
+                      ),
+                  )}
               </ul>
             </section>
           )}
@@ -443,7 +459,7 @@ const MainApp = ({
             <h2>Trending Movies</h2>
             <ul>
               {trendingMovies.map((movie, index) => (
-                <li key={movie.$id} >
+                <li key={movie.$id}>
                   <p>{index + 1}</p>
                   <img
                     src={movie.poster_url ? movie.poster_url : noMoviePoster}
@@ -458,38 +474,38 @@ const MainApp = ({
         <section className="all-movies">
           <h2>{searchTerm ? "Search Results" : "All Movies"}</h2>
 
-           {isLoading ? (
-             <Spinner />
-           ) : errorMessage ? (
-             <p className="text-red-500">{errorMessage}</p>
-           ) : (
-             <ul>
-               {movieList.map((movie) => (
-                 <MovieCard
-                   key={movie.$id}
-                   movie={movie}
-                   onClick={handleMovieClick}
-                   user={user}
-                 />
-               ))}
-             </ul>
+          {isLoading ? (
+            <Spinner />
+          ) : errorMessage ? (
+            <p className="text-red-500">{errorMessage}</p>
+          ) : (
+            <ul>
+              {movieList.map((movie) => (
+                <MovieCard
+                  key={movie.$id}
+                  movie={movie}
+                  onClick={handleMovieClick}
+                  user={user}
+                />
+              ))}
+            </ul>
           )}
         </section>
       </div>
 
-       {/* Movie Modal */}
-       {selectedMovie && (
-         <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
-       )}
-       
-       {/* Bookmark Modal */}
-       {showBookmarks && (
-         <BookmarkModal
-           user={user}
-           onClose={() => setShowBookmarks(false)}
-           onMovieClick={handleMovieClick}
-         />
-       )}
+      {/* Movie Modal */}
+      {selectedMovie && (
+        <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
+      )}
+
+      {/* Bookmark Modal */}
+      {showBookmarks && (
+        <BookmarkModal
+          user={user}
+          onClose={() => setShowBookmarks(false)}
+          onMovieClick={handleMovieClick}
+        />
+      )}
     </main>
   );
 };
