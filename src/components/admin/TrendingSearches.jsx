@@ -3,6 +3,7 @@ import { Query } from "appwrite";
 import { database } from "../../Appwrite";
 import "./admin.css";
 import { TrendingUp, RotateCcw, Trash2, SearchX } from "lucide-react";
+import Spinner from "../Spinner";
 
 const TrendingSearches = () => {
   const [searches, setSearches] = useState([]);
@@ -85,6 +86,7 @@ const TrendingSearches = () => {
       {loading ? (
         <div className="loading-container">
           <div className="loading-spinner"></div>
+          <img src="/turkeyloading.gif" alt="loading" />
           <p className="loading-text">Loading searches...</p>
         </div>
       ) : (

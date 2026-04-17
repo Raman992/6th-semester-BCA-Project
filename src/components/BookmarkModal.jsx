@@ -86,7 +86,10 @@ const BookmarkModal = ({ user, onClose }) => {
       <div className="movie-modal-overlay">
         <div className="movie-modal">
           <div className="modal-content">
+            <div>              
+            <img src="/turkeyloading.gif" alt="loading" />
             <h2>Loading your bookmarks...</h2>
+            </div>
           </div>
         </div>
       </div>

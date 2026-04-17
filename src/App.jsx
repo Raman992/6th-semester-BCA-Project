@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 import Search from "./components/Search.jsx";
 import Spinner from "./components/Spinner.jsx";
@@ -307,8 +307,18 @@ const MainApp = ({
     useState(false);
   const [clickHistoryCount, setClickHistoryCount] = useState(0);
   const [showBookmarks, setShowBookmarks] = useState(false);
+  const preferencesRef = useRef(null);
 
-  // Load click-based recommendations when user interacts
+  // Scroll to preferences when shown
+  useEffect(() => {
+    if (showPreferences && preferencesRef.current) {
+      preferencesRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [showPreferences]);
+
   const loadClickRecommendations = async () => {
     if (!user?.$id) return;
 
@@ -357,7 +367,7 @@ const MainApp = ({
       <Navbar
         user={user}
         onLogout={handleLogout}
-        onShowPreferences={() => setShowPreferences(true)}
+        onShowPreferences={() => setShowPreferences(!showPreferences)}
         onShowDashboard={() => setShowDashboard(true)}
         onShowBookmarks={() => setShowBookmarks(true)}
       />
@@ -381,11 +391,13 @@ const MainApp = ({
         </header>
 
         {showPreferences && (
-          <Preferences
-            userId={user.$id}
-            onSave={handlePreferencesSave}
-            initialPreferences={userPreferences || {}}
-          />
+          <div ref={preferencesRef}>
+            <Preferences
+              userId={user.$id}
+              onSave={handlePreferencesSave}
+              initialPreferences={userPreferences || {}}
+            />
+          </div>
         )}
 
         {recommendedMovies.length > 0 && !searchTerm && (
@@ -475,7 +487,7 @@ const MainApp = ({
           <h2>{searchTerm ? "Search Results" : "All Movies"}</h2>
 
           {isLoading ? (
-            <Spinner />
+            <img src="/turkeyloading.gif" alt="loading" />
           ) : errorMessage ? (
             <p className="text-red-500">{errorMessage}</p>
           ) : (

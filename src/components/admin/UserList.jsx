@@ -109,7 +109,8 @@ const UserList = () => {
 
       {loading ? (
         <div className="loading-container">
-          <div className="loading-spinner"></div>
+          <div className="loading-spinner"></div>          
+            <img src="/turkeyloading.gif" alt="loading" />
           <p className="loading-text">Loading users...</p>
         </div>
       ) : (

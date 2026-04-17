@@ -19,7 +19,7 @@ const Navbar = ({ user, onLogout, onShowPreferences, onShowDashboard, onShowBook
   return (
     <nav className="navbar">
       <div className="navbar-content">
-        <div className="navbar-brand">
+        <div className="navbar-brand" onClick={() => window.location.href = '/'}>
           <h1>
             Movies<span className="text-gradient">OK</span>
           </h1>
@@ -31,7 +31,7 @@ const Navbar = ({ user, onLogout, onShowPreferences, onShowDashboard, onShowBook
               {/* Only show admin button if user is admin */}
               {isAdmin && (
                 <a href="/admin/dashboard" className="nav-button preferences-button">
-                  <i className="fa-solid fa-shield-haltered"></i>
+                  <i className="fa-solid fa-user-shield"></i>
                   Admin
                 </a>
               )}

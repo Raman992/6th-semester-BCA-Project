@@ -111,7 +111,8 @@ const MovieList = () => {
 
       {loading ? (
         <div className="loading-container">
-          <div className="loading-spinner"></div>
+          <div className="loading-spinner"></div>          
+            <img src="/turkeyloading.gif" alt="loading" />
           <p className="loading-text">Loading movies...</p>
         </div>
       ) : (
