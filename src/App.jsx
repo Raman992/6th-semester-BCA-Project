@@ -35,7 +35,6 @@ import {
 import ProtectedRoute from "./components/protectedRoute.jsx";
 
 const App = () => {
-  // Authentication state
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
@@ -43,7 +42,6 @@ const App = () => {
   const [showDashboard, setShowDashboard] = useState(false);
   const [userPreferences, setUserPreferences] = useState(null);
 
-  // Movie state
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [movieList, setMovieList] = useState([]);
@@ -54,7 +52,6 @@ const App = () => {
 
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm]);
 
-  // Check user authentication on mount
   useEffect(() => {
     checkAuth();
   }, []);
@@ -79,15 +76,12 @@ const App = () => {
       let movies;
 
       if (query) {
-        // Search movies in database
         movies = await searchMoviesInDatabase(query);
 
-        // Update search count for trending movies
         if (movies.length > 0) {
           await updateSearchCount(query, movies[0]);
         }
       } else {
-        // Get all movies from database
         movies = await getAllMoviesFromDatabase(100, 0);
       }
 
@@ -164,7 +158,6 @@ const App = () => {
     loadTrendingMovies();
   }, []);
 
-  // If no user, show login/signup
   if (!user) {
     return (
       <main>
@@ -217,7 +210,7 @@ const App = () => {
             <ul>
               {trendingMovies.map(
                 (movie, index) =>
-                  movie.title &&
+                  movie.searchTerm &&
                   movie.poster_url && (
                     <li key={movie.$id}>
                       <p>{index + 1}</p>
@@ -225,7 +218,7 @@ const App = () => {
                         src={
                           movie.poster_url ? movie.poster_url : noMoviePoster
                         }
-                        alt={movie.title}
+                        alt={movie.searchTerm}
                       />
                     </li>
                   ),
@@ -237,7 +230,6 @@ const App = () => {
     );
   }
 
-  // If user is logged in, show the main app with router
   return (
     <Router>
       <AdminProvider>
@@ -280,7 +272,6 @@ const App = () => {
   );
 };
 
-// MainApp component receives props
 const MainApp = ({
   user,
   setUser,
@@ -309,7 +300,6 @@ const MainApp = ({
   const [showBookmarks, setShowBookmarks] = useState(false);
   const preferencesRef = useRef(null);
 
-  // Scroll to preferences when shown
   useEffect(() => {
     if (showPreferences && preferencesRef.current) {
       preferencesRef.current.scrollIntoView({
@@ -336,20 +326,16 @@ const MainApp = ({
     }
   };
 
-  // Handle movie click with tracking
   const handleMovieClick = async (movie) => {
     setSelectedMovie(movie);
 
-    // Track the click
     if (user?.$id) {
       await trackMovieClick(user.$id, movie);
 
-      // Refresh recommendations after click
       await loadClickRecommendations();
     }
   };
 
-  // Load recommendations on component mount
   useEffect(() => {
     if (user?.$id) {
       loadClickRecommendations();

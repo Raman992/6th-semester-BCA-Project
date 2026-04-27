@@ -7,6 +7,9 @@ const USER_PREFS_COLLECTION_ID = import.meta.env
   .VITE_APPWRITE_USER_PREFS_COLLECTION_ID;
 const USER_INTERACTIONS_COLLECTION_ID = import.meta.env
   .VITE_APPWRITE_USER_INTERACTIONS_COLLECTION_ID;
+const MOVIES_COLLECTION_ID = import.meta.env.VITE_APPWRITE_MOVIES_COLLECTION_ID;
+const BOOKMARKS_COLLECTION_ID = import.meta.env
+  .VITE_APPWRITE_BOOKMARKS_COLLECTION_ID;
 
 export const client = new Client()
   .setEndpoint("https://fra.cloud.appwrite.io/v1")
@@ -14,10 +17,6 @@ export const client = new Client()
 
 export const database = new Databases(client);
 export const account = new Account(client);
-
-const MOVIES_COLLECTION_ID = import.meta.env.VITE_APPWRITE_MOVIES_COLLECTION_ID;
-const BOOKMARKS_COLLECTION_ID = import.meta.env
-  .VITE_APPWRITE_BOOKMARKS_COLLECTION_ID;
 
 //Save movie
 export const saveMovieToDatabase = async (movie) => {
@@ -231,7 +230,6 @@ export const getUserPreferences = async (userId) => {
   }
 };
 
-// Original functions (keep these)
 export const updateSearchCount = async (searchTerm, movie) => {
   try {
     const movieId = movie.movie_id || movie.id || movie.tmdb_id;

@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import noMoviePoster from "/noMoviePoster.jpg";
-import { isBookmarked, saveBookmark, removeBookmark } from "../Appwrite.jsx";
+import { isBookmarked as checkIsBookmarked, saveBookmark, removeBookmark } from "../Appwrite.jsx";
 
 const MovieCard = ({ movie, onClick, user }) => {
   const { title, vote_average, poster_path, release_date, original_language, $id: movieId } = movie;
   const [isBookmarking, setIsBookmarking] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarkedState, setIsBookmarkedState] = useState(false);
 
   // Check if movie is bookmarked when component mounts or user changes
   React.useEffect(() => {
     if (user && user.$id) {
       const checkBookmarkStatus = async () => {
-        const bookmarked = await isBookmarked(user.$id, movieId);
-        setIsBookmarked(bookmarked);
+        const bookmarked = await checkIsBookmarked(user.$id, movieId);
+        setIsBookmarkedState(bookmarked);
       };
       checkBookmarkStatus();
     }
@@ -30,12 +30,12 @@ const MovieCard = ({ movie, onClick, user }) => {
 
     setIsBookmarking(true);
     try {
-      if (isBookmarked) {
+      if (isBookmarkedState) {
         await removeBookmark(user.$id, movieId);
-        setIsBookmarked(false);
+        setIsBookmarkedState(false);
       } else {
         await saveBookmark(user.$id, movieId, movie);
-        setIsBookmarked(true);
+        setIsBookmarkedState(true);
       }
     } catch (error) {
       console.error("Error toggling bookmark:", error);
@@ -54,10 +54,10 @@ const MovieCard = ({ movie, onClick, user }) => {
       />
 
       {/* Bookmark Button */}
-      <button 
+      <button
         onClick={handleBookmarkClick}
-        className={`bookmark-btn ${isBookmarked ? 'bookmarked' : ''} ${isBookmarking ? 'loading' : ''}`}
-        aria-label={isBookmarked ? "Remove from bookmarks" : "Add to bookmarks"}
+        className={`bookmark-btn ${isBookmarkedState ? 'bookmarked' : ''} ${isBookmarking ? 'loading' : ''}`}
+        aria-label={isBookmarkedState ? "Remove from bookmarks" : "Add to bookmarks"}
       >
         <i className="fa-solid fa-bookmark"></i>
       </button>
