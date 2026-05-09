@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ID } from 'appwrite';
 import { database } from '../../Appwrite.jsx';
+import './admin.css';
 
 const MovieForm = ({ movie, onSuccess, onClose }) => {
   const [formData, setFormData] = useState({
@@ -104,7 +105,6 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
       };
 
       if (movie?.$id) {
-        // Update existing movie
         await database.updateDocument(
           DATABASE_ID,
           MOVIES_COLLECTION_ID,
@@ -112,7 +112,6 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
           movieData
         );
       } else {
-        // Create new movie
         await database.createDocument(
           DATABASE_ID,
           MOVIES_COLLECTION_ID,
@@ -126,8 +125,8 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
 
       onSuccess();
       if (onClose) onClose();
-    } catch (error) {
-      setError('Error saving movie: ' + error.message);
+    } catch (err) {
+      setError('Error saving movie: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -135,22 +134,20 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="admin-panel modal-content movie-modal">
-        {/* Header */}
-        <div className="modal-header section-header">
-          <h2 className="section-title">
-            {movie ? "Edit Movie" : "Add New Movie"}
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2 className="modal-title">
+            {movie ? '[+] Edit Movie' : '[+] Add New Movie'}
           </h2>
-
-          <button className="icon-btn delete" onClick={onClose}>
-            <i className="fa-solid fa-times"></i>
+          <button className="modal-close" onClick={onClose}>
+            ×
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal-form">
           {error && (
-            <div className="badge badge-red error-banner">
-              <p>{error}</p>
+            <div className="error-banner">
+              [x] {error}
             </div>
           )}
 
@@ -158,7 +155,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
             <div className="form-group">
               <label className="input-label">Title *</label>
               <input
-                className="table-search modal-input"
+                className="form-input"
                 type="text"
                 name="title"
                 value={formData.title}
@@ -171,7 +168,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
               <div className="form-group">
                 <label className="input-label">Original Language</label>
                 <input
-                  className="table-search modal-input"
+                  className="form-input"
                   type="text"
                   name="original_language"
                   value={formData.original_language}
@@ -182,7 +179,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
               <div className="form-group">
                 <label className="input-label">Release Date</label>
                 <input
-                  className="table-search modal-input"
+                  className="form-input"
                   type="date"
                   name="release_date"
                   value={formData.release_date}
@@ -194,7 +191,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
             <div className="form-group">
               <label className="input-label">Overview</label>
               <textarea
-                className="table-search modal-input"
+                className="form-textarea"
                 name="overview"
                 value={formData.overview}
                 onChange={handleChange}
@@ -206,7 +203,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
               <div className="form-group">
                 <label className="input-label">Poster Path</label>
                 <input
-                  className="table-search modal-input"
+                  className="form-input"
                   type="text"
                   name="poster_path"
                   value={formData.poster_path}
@@ -218,7 +215,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
               <div className="form-group">
                 <label className="input-label">Backdrop Path</label>
                 <input
-                  className="table-search modal-input"
+                  className="form-input"
                   type="text"
                   name="backdrop_path"
                   value={formData.backdrop_path}
@@ -232,7 +229,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
               <div className="form-group">
                 <label className="input-label">Vote Average</label>
                 <input
-                  className="table-search modal-input"
+                  className="form-input"
                   type="number"
                   name="vote_average"
                   value={formData.vote_average}
@@ -246,7 +243,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
               <div className="form-group">
                 <label className="input-label">Vote Count</label>
                 <input
-                  className="table-search modal-input"
+                  className="form-input"
                   type="number"
                   name="vote_count"
                   value={formData.vote_count}
@@ -257,7 +254,7 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
               <div className="form-group">
                 <label className="input-label">Popularity</label>
                 <input
-                  className="table-search modal-input"
+                  className="form-input"
                   type="number"
                   name="popularity"
                   value={formData.popularity}
@@ -302,20 +299,26 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
                 />
                 Has Video
               </label>
-              {formData.video &&(<input
-                className="table-search modal-input"
-                type="text"
-                name="TrailerId"
-                value={formData.TrailerId}
-                onChange={handleChange}
-                placeholder="Trailer ID"
-              />)}
             </div>
+
+            {formData.video && (
+              <div className="form-group" style={{ marginTop: '12px' }}>
+                <label className="input-label">Trailer ID</label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="TrailerId"
+                  value={formData.TrailerId}
+                  onChange={handleChange}
+                  placeholder="YouTube video ID"
+                />
+              </div>
+            )}
           </div>
 
           <div className="modal-footer">
             <button
-              className="reset-btn"
+              className="btn-secondary"
               type="button"
               onClick={onClose}
             >
@@ -323,11 +326,11 @@ const MovieForm = ({ movie, onSuccess, onClose }) => {
             </button>
 
             <button
-              className="load-more-btn"
+              className="btn-primary"
               type="submit"
               disabled={loading}
             >
-              {loading ? "Saving..." : movie ? "Update Movie" : "Add Movie"}
+              {loading ? 'Saving...' : movie ? 'Update Movie' : 'Add Movie'}
             </button>
           </div>
         </form>

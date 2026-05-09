@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { database } from "../../Appwrite.jsx";
 import MovieForm from "./MovieForm";
 import MovieList from "./MovieList";
 import UserList from "./UserList";
 import TrendingSearches from "./TrendingSearches";
+import "./admin.css";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("movies");
@@ -16,8 +17,7 @@ const AdminDashboard = () => {
   });
 
   const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
-  const MOVIES_COLLECTION_ID = import.meta.env
-    .VITE_APPWRITE_MOVIES_COLLECTION_ID;
+  const MOVIES_COLLECTION_ID = import.meta.env.VITE_APPWRITE_MOVIES_COLLECTION_ID;
   const SEARCH_COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
 
   useEffect(() => {
@@ -67,71 +67,62 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-bg">
-      {/* Header */}
-      <header className="admin-header">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="admin-title">Admin Dashboard</h1>
-            <button
-              onClick={() => (window.location.href = "/")}
-              className="btn-back px-4 py-2 text-white"
-            >
-              Back to Site
-            </button>
-          </div>
-        </div>
-      </header>
+      <div className="admin-container">
+        <header className="admin-header">
+          <h1 className="admin-title">Admin Dashboard</h1>
+          <p className="admin-subtitle">Manage your movies, users, and search analytics</p>
+          <button
+            onClick={() => (window.location.href = "/")}
+            className="btn-back"
+            style={{ marginTop: "16px" }}
+          >
+            ← Back to Site
+          </button>
+        </header>
 
-      {/* Stats Cards */}
-      <div className="stat-card">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <h3 className="stat-label">Total Movies</h3>
-            <p className="stat-value text-white">{stats.totalMovies}</p>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <h3 className="stat-label">[+] Total Movies</h3>
+            <p className="stat-value">{stats.totalMovies}</p>
           </div>
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <h3 className="stat-label">Total Users</h3>
-            <p className="stat-value text-white">{stats.totalUsers}</p>
+          <div className="stat-card">
+            <h3 className="stat-label">[-] Total Users</h3>
+            <p className="stat-value">{stats.totalUsers}</p>
           </div>
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <h3 className="stat-label">Total Searches</h3>
-            <p className="stat-value text-white">{stats.totalSearches}</p>
+          <div className="stat-card">
+            <h3 className="stat-label">[x] Total Searches</h3>
+            <p className="stat-value">{stats.totalSearches}</p>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="admin-tabs mb-6">
+        <div className="admin-tabs">
           <button
             onClick={() => setActiveTab("movies")}
-            className={`admin-tab ${activeTab === "movies" ? "active" : ""}`}
+            className={`btn-tab ${activeTab === "movies" ? "active" : ""}`}
           >
             Movies
           </button>
           <button
             onClick={() => setActiveTab("users")}
-            className={`admin-tab ${activeTab === "users" ? "active" : ""}`}
+            className={`btn-tab ${activeTab === "users" ? "active" : ""}`}
           >
             Users
           </button>
           <button
             onClick={() => setActiveTab("trending")}
-            className={`admin-tab ${activeTab === "trending" ? "active" : ""}`}
+            className={`btn-tab ${activeTab === "trending" ? "active" : ""}`}
           >
             Trending Searches
           </button>
         </div>
 
-        {/* Tab Content */}
-        <div className="admin-panel">
+        <div className="admin-section">
           {activeTab === "movies" && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-white">Manage Movies</h2>
-                <button
-                  onClick={handleAddMovie}
-                  className="btn-primary px-4 py-2 text-white"
-                >
-                  Add New Movie
+              <div className="section-header">
+                <h2 className="section-title">Manage Movies</h2>
+                <button onClick={handleAddMovie} className="btn-primary">
+                  + Add New Movie
                 </button>
               </div>
               <MovieList onEditMovie={handleEditMovie} />
@@ -140,23 +131,20 @@ const AdminDashboard = () => {
 
           {activeTab === "users" && (
             <div>
-              <h2 className="text-xl font-bold text-white mb-6">
-                Manage Users
-              </h2>
+              <h2 className="section-title">Manage Users</h2>
               <UserList />
             </div>
           )}
 
           {activeTab === "trending" && (
             <div>
-              <h2 className="text-xl font-bold text-white mb-6">
-                Manage Searches
-              </h2>
+              <h2 className="section-title">Trending Searches</h2>
               <TrendingSearches />
             </div>
           )}
         </div>
       </div>
+
       {showMovieForm && (
         <MovieForm
           movie={selectedMovie}

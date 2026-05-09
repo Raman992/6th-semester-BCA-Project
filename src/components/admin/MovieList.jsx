@@ -3,9 +3,8 @@ import { Query } from 'appwrite';
 import { database } from '../../Appwrite.jsx';
 import MovieForm from './MovieForm';
 import "./admin.css";
-import { Search, Edit, Trash2, Image } from "lucide-react";
 
-const MovieList = () => {
+const MovieList = ({ onEditMovie }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -32,7 +31,7 @@ const MovieList = () => {
     }
     try {
       const queries = [Query.limit(50), Query.orderDesc('createdAt')];
-      
+
       if (searchTerm) {
         queries.push(Query.contains('title', [searchTerm]));
       }
@@ -52,7 +51,7 @@ const MovieList = () => {
       } else {
         setMovies(response.documents);
       }
-      
+
       setCursor(response.cursor);
       setHasMore(response.documents.length === 50);
     } catch (error) {
@@ -98,7 +97,10 @@ const MovieList = () => {
           <span className="user-count">{movies.length}</span>
         </div>
         <div className="search-wrapper">
-          <Search size={18} />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
           <input
             type="text"
             placeholder="Search movies..."
@@ -111,8 +113,7 @@ const MovieList = () => {
 
       {loading ? (
         <div className="loading-container">
-          <div className="loading-spinner"></div>          
-            <img src="/turkeyloading.gif" alt="loading" />
+          <div className="loading-spinner"></div>
           <p className="loading-text">Loading movies...</p>
         </div>
       ) : (
@@ -139,7 +140,11 @@ const MovieList = () => {
                       />
                     ) : (
                       <div className="movie-poster-placeholder">
-                        <Image size={32} />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                          <circle cx="8.5" cy="8.5" r="1.5"/>
+                          <polyline points="21 15 16 10 5 21"/>
+                        </svg>
                       </div>
                     )}
                   </td>
@@ -163,14 +168,20 @@ const MovieList = () => {
                         className="icon-btn edit"
                         title="Edit movie"
                       >
-                       <Edit size={18} />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
                       </button>
                       <button
                         onClick={() => handleDelete(movie.$id)}
                         className="icon-btn delete"
                         title="Delete movie"
                       >
-                        <Trash2 size={18} />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="3 6 5 6 21 6"/>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
                       </button>
                     </div>
                   </td>
@@ -181,7 +192,11 @@ const MovieList = () => {
 
           {movies.length === 0 && (
             <div className="empty-state">
-                <Image size={48} className="empty-state-icon" />
+              <svg className="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
               <h3 className="empty-state-title">No movies found</h3>
               <p className="empty-state-text">Add your first movie to get started</p>
             </div>
@@ -189,8 +204,8 @@ const MovieList = () => {
 
           {hasMore && (
             <div className="load-more-container">
-              <button 
-                onClick={handleLoadMore} 
+              <button
+                onClick={handleLoadMore}
                 className="load-more-btn"
                 disabled={loadingMore}
               >

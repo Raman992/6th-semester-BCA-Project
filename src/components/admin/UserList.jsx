@@ -1,8 +1,7 @@
 import { Functions } from "appwrite";
 import React, { useState, useEffect } from "react";
-import { Client, Account, Databases, Query } from "appwrite";
+import { Client, Databases } from "appwrite";
 import "./admin.css";
-import { Users, UserX, Search, Trash2, } from "lucide-react";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -91,12 +90,14 @@ const UserList = () => {
     <div>
       <div className="section-header">
         <div className="section-title">
-          <Users size={20} />
           Manage Users
           <span className="user-count">{filteredUsers.length}</span>
         </div>
         <div className="search-wrapper">
-          <Search size={18} />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
           <input
             type="text"
             placeholder="Search by name or email..."
@@ -109,8 +110,7 @@ const UserList = () => {
 
       {loading ? (
         <div className="loading-container">
-          <div className="loading-spinner"></div>          
-            <img src="/turkeyloading.gif" alt="loading" />
+          <div className="loading-spinner"></div>
           <p className="loading-text">Loading users...</p>
         </div>
       ) : (
@@ -129,7 +129,7 @@ const UserList = () => {
                   <td>
                     <div className="user-info">
                       <img
-                        src={`https://ui-avatars.com/api/?name=${user.name || "User"}&background=a855f7&color=fff&bold=true`}
+                        src={`https://ui-avatars.com/api/?name=${user.name || "User"}&background=201d1d&color=fdfcfc&bold=true`}
                         alt={user.name}
                         className="user-avatar"
                       />
@@ -147,7 +147,10 @@ const UserList = () => {
                       className="icon-btn delete"
                       title="Delete user"
                     >
-                      <Trash2 size={18} />
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
                     </button>
                   </td>
                 </tr>
@@ -157,7 +160,12 @@ const UserList = () => {
 
           {filteredUsers.length === 0 && (
             <div className="empty-state">
-              <UserX size={48} className="empty-state-icon" />
+              <svg className="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
               <h3 className="empty-state-title">No users found</h3>
               <p className="empty-state-text">
                 Try adjusting your search criteria
