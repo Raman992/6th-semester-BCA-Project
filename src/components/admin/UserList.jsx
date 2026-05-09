@@ -12,7 +12,6 @@ const UserList = () => {
     .setEndpoint("https://fra.cloud.appwrite.io/v1")
     .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
 
-  const account = new Account(client);
   const databases = new Databases(client);
   const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
   const USER_PREFS_COLLECTION_ID = import.meta.env

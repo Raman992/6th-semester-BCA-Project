@@ -2,27 +2,27 @@
 
 :root {
   /* Colors */
-  --color-primary: #201d1d;
-  --color-on-primary: #fdfcfc;
-  --color-ink: #201d1d;
-  --color-ink-deep: #0f0000;
-  --color-charcoal: #302c2c;
-  --color-body: #424245;
-  --color-mute: #646262;
-  --color-stone: #6e6e73;
-  --color-ash: #9a9898;
-  --color-canvas: #fdfcfc;
-  --color-surface-soft: #f8f7f7;
-  --color-surface-card: #f1eeee;
-  --color-surface-dark: #201d1d;
-  --color-surface-dark-elevated: #302c2c;
-  --color-hairline: rgba(15, 0, 0, 0.12);
-  --color-hairline-strong: #646262;
-  --color-on-dark: #fdfcfc;
-  --color-on-dark-mute: #9a9898;
-  --color-accent: #007aff;
-  --color-accent-hover: #0056b3;
-  --color-accent-active: #004085;
+  --color-primary: #a855f7;
+  --color-on-primary: #ffffff;
+  --color-ink: #581c87;
+  --color-ink-deep: #4c1d95;
+  --color-charcoal: #7e22ce;
+  --color-body: #6b21a8;
+  --color-mute: #9333ea;
+  --color-stone: #a855f7;
+  --color-ash: #c084fc;
+  --color-canvas: #faf5ff;
+  --color-surface-soft: #f3e8ff;
+  --color-surface-card: #e9d5ff;
+  --color-surface-dark: #581c87;
+  --color-surface-dark-elevated: #7e22ce;
+  --color-hairline: rgba(147, 51, 234, 0.2);
+  --color-hairline-strong: #9333ea;
+  --color-on-dark: #ffffff;
+  --color-on-dark-mute: #d8b4fe;
+  --color-accent: #a855f7;
+  --color-accent-hover: #9333ea;
+  --color-accent-active: #7e22ce;
   --color-warning: #ff9f0a;
   --color-warning-hover: #cc7f08;
   --color-warning-active: #995f06;
@@ -261,12 +261,12 @@
 
 .section-title::before {
   content: '[+]';
-  color: var(--color-mute);
+  color: var(--color-primary);
 }
 
 .user-count {
-  background-color: var(--color-surface-dark);
-  color: var(--color-on-dark);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   font-size: 14px;
   font-weight: 400;
   line-height: 2;
@@ -366,18 +366,18 @@
 }
 
 .badge-yellow {
-  background-color: var(--color-surface-dark);
-  color: var(--color-on-dark);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .badge-green {
-  background-color: var(--color-surface-dark);
-  color: var(--color-on-dark);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .badge-red {
-  background-color: var(--color-surface-dark);
-  color: var(--color-on-dark);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .badge-mute {
@@ -411,8 +411,8 @@
 }
 
 .icon-btn.edit:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .icon-btn.delete:hover {
@@ -490,8 +490,8 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background-color: var(--color-surface-soft);
-  color: var(--color-body);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   border-radius: var(--rounded-sm);
   font-size: 14px;
   font-weight: 500;
@@ -544,7 +544,7 @@
 }
 
 .load-more-btn:hover {
-  background-color: var(--color-ink-deep);
+  background-color: var(--color-accent-hover);
 }
 
 .load-more-btn:disabled {
@@ -593,6 +593,8 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto var(--spacing-lg);
+  border-left-color: var(--color-primary);
+  border-right-color: var(--color-primary);
 }
 
 @keyframes spin {
@@ -763,9 +765,9 @@
 }
 
 .genre-pill.active {
-  background-color: var(--color-surface-dark);
-  color: var(--color-on-dark);
-  border-color: var(--color-surface-dark);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
 }
 
 /* Checkbox Row */
@@ -847,7 +849,7 @@
   content: '┌─────────────────────┐\n│    MOVIES ADMIN     │\n└─────────────────────┘\n';
   display: block;
   font-size: 10px;
-  color: var(--color-mute);
+  color: var(--color-primary);
   margin-bottom: var(--spacing-md);
   white-space: pre;
   line-height: 1.3;
@@ -911,7 +913,7 @@
 }
 
 .login-btn:hover {
-  background-color: var(--color-ink-deep);
+  background-color: var(--color-accent-hover);
 }
 
 .login-btn:disabled {
